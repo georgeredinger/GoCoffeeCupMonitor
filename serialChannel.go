@@ -5,6 +5,8 @@ import (
 	"log"
 	"runtime"
 	"time"
+//  "encoding/binary"
+//  "unsafe"
 )
 
 func main() {
@@ -18,39 +20,49 @@ func main() {
 	}
 
 	type xbeeRecord struct {
-		b   []byte
+    b []byte
+    //  startbyte byte
+    //  packetLenHi byte
+    //  packetLenLo byte
+	  //	data   [12]byte
+	  //	sum    byte
 		err error
 	}
-	rc := make(chan *xbeeRecord)
+  const xbLen = 16
+  //rc := make(chan(xbeeRecord),1 )
+	rc := make(chan *xbeeRecord )
 
+
+  //read serial port and put bytes on channel 
 	go func() {
 		for {
-			buf := make([]byte, 128)
+			//xb := new(xbeeRecord)
+      xb := new(xbeeRecord)
+      var buf[] byte
 			n, err := s.Read(buf)
-			rc <- &xbeeRecord{buf[:n], nil}
-			if err != nil {
+      log.Print(n)
+      if n != 0 {
+			  rc <- xb
+      }
+      if err != nil {
         if n == 0 {
           continue
         }
         log.Print(err)
-				//return
 			}
 		}
 	}()
 
 	for {
-		timeout := time.NewTicker(1 * time.Second)
+		timeout := time.NewTicker(10 * time.Second)
 		defer timeout.Stop() //is this necessary?
 		select {
 		case got := <-rc:
 			switch {
 			case got.err != nil:
-				//Catching an EOF error here can indicate the port was disconnected.
-				// -- if using a USB to serial port, and the device is unplugged 
-				//    while being read, we'll receive an EOF.
-				log.Fatal("  error:" + got.err.Error())
+  			log.Fatal("  error:" + got.err.Error())
 			default:
-				log.Print(got.b)
+				log.Printf("%X",got.b)
 			}
 		case <-timeout.C:
       log.Print(".")
