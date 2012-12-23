@@ -5,6 +5,7 @@ import (
 	"log"
 	"runtime"
 	"time"
+
 //  "encoding/binary"
 //  "unsafe"
 )
@@ -20,35 +21,34 @@ func main() {
 	}
 
 	type xbeeRecord struct {
-    b []byte
-    //  startbyte byte
-    //  packetLenHi byte
-    //  packetLenLo byte
-	  //	data   [12]byte
-	  //	sum    byte
+		b []byte
+		//  startbyte byte
+		//  packetLenHi byte
+		//  packetLenLo byte
+		//	data   [12]byte
+		//	sum    byte
 		err error
 	}
-  const xbLen = 16
-  //rc := make(chan(xbeeRecord),1 )
-	rc := make(chan *xbeeRecord )
+	const xbLen = 16
+	//rc := make(chan(xbeeRecord),1 )
+	rc := make(chan *xbeeRecord)
 
-
-  //read serial port and put bytes on channel 
+	//read serial port and put bytes on channel 
 	go func() {
 		for {
 			//xb := new(xbeeRecord)
-      xb := new(xbeeRecord)
-      var buf[] byte
+			xb := new(xbeeRecord)
+			var buf []byte
 			n, err := s.Read(buf)
-      log.Print(n)
-      if n != 0 {
-			  rc <- xb
-      }
-      if err != nil {
-        if n == 0 {
-          continue
-        }
-        log.Print(err)
+			log.Print(n)
+			if n != 0 {
+				rc <- xb
+			}
+			if err != nil {
+				if n == 0 {
+					continue
+				}
+				log.Print(err)
 			}
 		}
 	}()
@@ -60,12 +60,12 @@ func main() {
 		case got := <-rc:
 			switch {
 			case got.err != nil:
-  			log.Fatal("  error:" + got.err.Error())
+				log.Fatal("  error:" + got.err.Error())
 			default:
-				log.Printf("%X",got.b)
+				log.Printf("%X", got.b)
 			}
 		case <-timeout.C:
-      log.Print(".")
+			log.Print(".")
 		}
 		time.Sleep(1 * time.Second) //stutter the infinite loop.
 	}
