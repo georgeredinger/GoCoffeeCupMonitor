@@ -55,7 +55,7 @@ func main() {
 
 	for {
 		timeout := time.NewTicker(10 * time.Second)
-		defer timeout.Stop() //is this necessary?
+		defer timeout.Stop()
 		select {
 		case got := <-rc:
 			switch {
@@ -67,7 +67,7 @@ func main() {
 		case <-timeout.C:
 			log.Print(".")
 		}
-		time.Sleep(1 * time.Second) //stutter the infinite loop.
+		time.Sleep(1 * time.Second)
 	}
 
 }

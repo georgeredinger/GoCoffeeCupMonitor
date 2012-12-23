@@ -1,6 +1,6 @@
 package main
 
-import  "github.com/tarm/goserial"
+import "github.com/tarm/goserial"
 
 import "fmt"
 import "log"
@@ -30,8 +30,8 @@ func main() {
 	for {
 		n, err = s.Read(buf)
 		if err != nil {
-	    time.Sleep(time.Second/100)
-			continue;
+			time.Sleep(time.Second / 100)
+			continue
 		}
 
 		if n != 0 {
@@ -43,4 +43,3 @@ func main() {
 	}
 	time.Sleep(1 * time.Second)
 }
-
