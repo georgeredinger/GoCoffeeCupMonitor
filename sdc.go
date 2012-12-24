@@ -4,15 +4,23 @@ import "github.com/tarm/goserial"
 import "fmt"
 import "log"
 import "time"
+import "os"
 
 var offset int = 0
 var packet[16] byte
+func  packetdecode( packet [] byte) {
+
+}
 
 func  packetadd(b byte) {
-    packet[offset] = b
+      fmt.Printf("[%d](%x)",offset,b)
+      os.Stdout.Sync()
 		if offset == 0 && b != 0x7e {
+      fmt.Printf("[%x]",b)
+      os.Stdout.Sync()
 			return
 		}
+    packet[offset] = b
 		if offset == 15 {
 			fmt.Printf("%X",packet[:offset])
 			fmt.Printf("\n")
@@ -26,15 +34,18 @@ func  packetadd(b byte) {
 			fmt.Printf("ADC1 = %d \n",packet[11]*255+packet[12])
 			sum := 0
 			for i := 3;i<16;i++{
+         fmt.Printf("+%d",int(packet[i]))
 				 sum += int(packet[i])
 			 }
-			 fmt.Printf("sum = %d\n",sum)
+       fmt.Print("=\n")
+			 fmt.Printf("sum = %d\n",sum & 0x00ff)
 			offset = -1
 		}
 		offset++
   }
 
 func main() {
+	fmt.Printf("begin\n")
 	rc := make(chan byte)
 	fmt.Printf("open\n")
 	c := &serial.Config{Name: "/dev/ttyUSB0", Baud: 9600}
@@ -43,7 +54,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("begin\n")
 
 	if err != nil {
 		log.Fatal(err)
@@ -51,9 +61,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("begin\n")
 
 	go func() {
+    fmt.Print("Begin read go func\n")
 		buf := make([]byte, 16)
 		for {
 			n, err := s.Read(buf)
