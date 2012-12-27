@@ -5,6 +5,7 @@ import "fmt"
 import "log"
 import "time"
 import "os"
+import "./xbeeframe"
 
 var offset int = 0
 var packet[16] byte
@@ -13,18 +14,18 @@ func  packetdecode( packet [] byte) {
 }
 
 func  packetadd(b byte) {
-      fmt.Printf("[%d](%x)",offset,b)
-      os.Stdout.Sync()
+
 		if offset == 0 && b != 0x7e {
       fmt.Printf("[%x]",b)
       os.Stdout.Sync()
 			return
 		}
+
     packet[offset] = b
 		if offset == 15 {
 			fmt.Printf("%X",packet[:offset])
 			fmt.Printf("\n")
-			
+
 			fmt.Printf("len = %d \n",packet[1]*255+packet[2])
 			fmt.Printf("API = %d \n",packet[3])
 			fmt.Printf("frameid = %d \n",packet[4]*255+packet[5])
@@ -78,7 +79,7 @@ func main() {
 		}
 	}()
 
-  
+  frame = new(APIFrame)
 
 	for {
 		timeout := time.NewTicker(10 * time.Second)
@@ -88,7 +89,7 @@ func main() {
 			switch {
 			default:
 				packetadd(got)
-//				log.Printf("%X", got)
+				frame.add_byte(got)
 			}
 		case <-timeout.C:
 			log.Print(".")
