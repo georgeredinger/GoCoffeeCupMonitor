@@ -3,8 +3,10 @@ package xbeeframe
 import (
   "testing"
 	"fmt"
-	"strconv"
+	"encoding/hex"
+
 )
+
 /*
 0x7E  Start frame delimiter.
 
@@ -15,16 +17,15 @@ import (
 
 
 
-
 var frametests = [] struct {
-	               frame  string
+	               frame string
 								 sum uint8
 							  }{
-									{"7E000x028A066F",0x6f},
-									{"7E000x028A066F",0x6f},
-									{"7E000x028A066F",0x6f},
-									{"7E000x028A066F",0x6f},
-									{"7E000x028A066F",0x6f},
+									{"7E00028A066F",0x6f},
+									{"7E00028A066F",0x6f},
+									{"7E00028A066F",0x6f},
+									{"7E00028A066F",0x6f},
+									{"7E00028A066F",0x6f},
 						    }
 
 
@@ -36,14 +37,18 @@ var frametests = [] struct {
 //6F    : checksum FF – ((8A +06) & FF) = 6F
 //
 
+var packet [256]byte
+
 func TestFrames(t *testing.T) {
-	bytes,err := strconv.ParseUint(frametests[0].frame[0:2],16,8)
-	if err != nil {
-		fmt.Printf("what %X",err)
-	}
-	fmt.Printf("frame[0] = %X\n",bytes)
-	if bytes != 0x7E {
-    t.Errorf("frame must start with 0x7f 0x%X",uint8(frametests[0].frame[0]))
-  }
+	for i,f := range(frametests) {
+		packet,err := hex.DecodeString(f.frame)
+		fmt.Printf("len %v %X %v %X\n",i,packet,err,f.sum)
+		  if err != nil {
+				fmt.Print ("ooops\n")
+			}
+			fmt.Printf("first byte is %X\n",packet[0])
+
+		}
 }
+
 

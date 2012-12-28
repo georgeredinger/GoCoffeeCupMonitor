@@ -1,6 +1,5 @@
 package xbeeframe
 
-import "fmt"
 /*
 0x7E  Start frame delimiter.
 
@@ -24,7 +23,6 @@ type APIFrame struct {
 
 func checksum(f *APIFrame) bool { return false}
 func add_byte( f *APIFrame) bool {
-  fmt.Print("-")
 	return false
 
 }
