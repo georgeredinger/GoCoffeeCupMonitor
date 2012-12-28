@@ -1,5 +1,5 @@
 package xbeeframe
-
+//import "fmt"
 /*
 0x7E  Start frame delimiter.
 
@@ -17,21 +17,28 @@ const (
 
 var ESCAPE_BYTES = []int{START_BYTE, ESCAPE_BYTE, XON_BYTE, XOFF_BYTE}
 
-type APIFrame struct {
-
+type APIframe struct {
+	frame []byte
+	length int
 }
 
-func checksum(f *APIFrame) bool { return false}
-func add_byte( f *APIFrame) bool {
-	return false
-
+func checksum(f *APIframe) bool { return false}
+func (f *APIframe) add_byte(b byte ) bool {
+	//fmt.Printf(" add_byte: %2X\n",b)
+	f.frame = append(f.frame,b)
+	return true;
 }
-func remaining_bytes(f *APIFrame) int { return 0}
-func parse(f *APIFrame) * map[string] string {
-      var m = map[string] string {
-        "demo0": "1234.56",
-        "demo1": "6543.21" }
-      return &m
+func (f APIframe) remaining_bytes() int { return 0}
+
+func (f APIframe) parse()  bool {
+  var good bool
+
+	if f.frame[0] == byte(0x7E) {
+    good = true
+	}else{
+		good = false
+	}
+	return good
 }
 
 

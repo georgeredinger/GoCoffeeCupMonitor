@@ -1,10 +1,9 @@
 package xbeeframe
 
 import (
-  "testing"
+	"testing"
 	"fmt"
-	"encoding/hex"
-
+  "encoding/hex"
 )
 
 /*
@@ -18,15 +17,15 @@ import (
 
 
 var frametests = [] struct {
-	               frame string
-								 sum uint8
-							  }{
-									{"7E00028A066F",0x6f},
-									{"7E00028A066F",0x6f},
-									{"7E00028A066F",0x6f},
-									{"7E00028A066F",0x6f},
-									{"7E00028A066F",0x6f},
-						    }
+	frame string
+	sum uint8
+}{
+	{"7E00028A066F",0x6f},
+//	{"00028A066F7E00028A066F",0x6f},
+//	{"7E00028A066F7E00028A066F",0x6f},
+//	{"028A066F7E00028A066F",0x6f},
+//	{"066FA7E00028A066F",0x6f},
+}
 
 
 
@@ -37,18 +36,26 @@ var frametests = [] struct {
 //6F    : checksum FF – ((8A +06) & FF) = 6F
 //
 
+
 var packet [256]byte
 
 func TestFrames(t *testing.T) {
-	for i,f := range(frametests) {
-		packet,err := hex.DecodeString(f.frame)
-		fmt.Printf("len %v %X %v %X\n",i,packet,err,f.sum)
-		  if err != nil {
-				fmt.Print ("ooops\n")
+	for _,f := range(frametests) {
+	  packet,err := hex.DecodeString(f.frame) // convert test data hex string to byte sequence, 2 characters per byte
+		if err != nil {
+			fmt.Print("oops\n")
 			}
-			fmt.Printf("first byte is %X\n",packet[0])
-
+	  var apiframe APIframe 
+		for _,b := range([]byte(packet)) {
+			apiframe.add_byte(b)
 		}
+		res:=apiframe.parse()
+		 fmt.Printf("result %v\n",res)
+
+	}
+	//		fmt.Printf("len %v %X %v %X\n",i,packet,err,f.sum)
+
 }
+
 
 
