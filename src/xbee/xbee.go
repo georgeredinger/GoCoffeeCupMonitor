@@ -10,7 +10,46 @@ import "bytes"
 
 0x11 0x13  These bytes are software flow control characters.
 */
+//Xbee API ids: (RX packets only
+const (
+		XBEE_IO64 = byte(0x82) // expect this
+		XBEE_IO16 = byte(0x83) // or this
+		//other API ids should throw an error
+)
+//  from: http://www.jsjf.demon.co.uk/xbee/xbee.pdf
+//  Input Line States how to decode API id 0x82 or 0x83
+//  
+//  This packet is used when a remote XBee and a base XBee have been conﬁgured 
+//  so that the remote will sample its inputs at
+//  set intervals, and transmit the results to the base. If the base XBee is conﬁgured
+//  to pass such data out through the UART,
+//  the base’s host will receive this packet.
+//  1. Byte: packet type id 0x82 for 64-bit source address, or 0x83 for 16-bit source address.
+//  2. Bytes: source address. 
+//     Two bytes for 16-bit source addressing, or eight for 64-bit source addressing.
+//  3. Byte: RSSI value.
+//  4. Byte: options.
+//     If bit 1 is set, this is an address broadcast.
+//     If bit 2 is set, it is a PAN broadcast. All other bits are   reserved.
+//  5. Byte: sample quantity. This is the number of full sets of samples in what follows.
+//  6. Word: 2-byte channel indicator msb ﬁrst.
+//     Bits 14–9 are a 6-bit mask, with 1 for each ADC channel in AD5–AD0
+//     respectively that will be reported.
+//     Bits 8–0 are for the digital lines D8–D0, showing which of them will be included
+//     in the values. Bit 15 is not used.
+//  7. Word: optional 16-bit bitﬁeld, with bits corresponding to lines D8–D0 
+//     as in the channel indicator. Where bits were
+//     set in the channel indicator, the corresponding bits here show the 
+//     state of the input. These bytes are not present if
+//     there are no lines enabled as digital inputs.
+//  8. Words: if any bits in the channel indicator were set among the A-D inputs, 
+//     those readings now follow. Each is a
+//     16-bit value with the A-D reading in the low-order 10 bits.
+//     A-D readings are given in order from AD0 to AD5.
+//  
 
+
+// escapes
 const (
 	START_BYTE  = byte(0x7E)
 	ESCAPE_BYTE = byte(0x7D)
