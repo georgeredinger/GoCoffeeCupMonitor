@@ -45,15 +45,34 @@ func isEsc(b byte) bool {
 	return (bytes.IndexByte(ESCAPE_BYTES, b) != -1)
 }
 
-func (f *APIframe) init() {}
+func (f *APIframe) init() {
+		  f.frame = f.frame[:0]	
+			f.lengthHi = 0
+			f.lengthLo = 0
+			f.length   = 0
+			f.started  = false
+			f.bytesLeft= 0
+			f.checkSum  = 0
+}
 
 func (f *APIframe) checksum() bool { return false }
 
 func (f *APIframe) add_byte(b uint8) bool {
 
-	if b == ESCAPE_BYTE {
-		f.state = waitingForEscape
-		return false
+	switch b {
+	case XON_BYTE, XOFF_BYTE:
+		if f.state == waitingForEscape {
+			break
+		} else {
+			return false //ignore xon xoff
+		}
+	case ESCAPE_BYTE:
+		if f.state == waitingForEscape {
+			break
+		} else {
+			f.state = waitingForEscape
+			return false
+		}
 	}
 
 	switch f.state {
@@ -102,7 +121,8 @@ func (f *APIframe) add_byte(b uint8) bool {
 			f.state = waitingForStart
 			fmt.Printf("Checksum %X != %X\n", f.checkSum, b)
 			fmt.Printf("packet: %X,%X\n", f.frame, b)
-			panic("checksum failure")
+			f.init()
+			return false // 
 		}
 	case done:
 		return true

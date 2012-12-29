@@ -46,6 +46,9 @@ const escapedPacket = "7E0002237D31CB"
 //    correct, the sum will equal 0xFF.
 //
 
+const xonPacket = "7E000112237D31CB"
+const xoffPacket = "7E0002237D3113CB"
+
 var frametests = []struct {
 	frame string
 	good  bool
@@ -58,6 +61,8 @@ var frametests = []struct {
 	{"066FA7E00028A066F0", true},
 	{helloPacket, true},
 	{escapedPacket, true},
+	{xonPacket, true},
+	{xoffPacket, true},
 }
 
 //7E    : API Frame
@@ -71,7 +76,7 @@ var packet [256]byte
 
 func TestFrames(t *testing.T) {
 	for _, f := range frametests {
-		packet, err := hex.DecodeString(f.frame) // convert test data hex string to byte sequence, 2 characters per byte
+		packet, err := hex.DecodeString(f.frame) // convert test data hex string to byte sequence
 		if err != nil {
 			panic("bad test data\n")
 		}
