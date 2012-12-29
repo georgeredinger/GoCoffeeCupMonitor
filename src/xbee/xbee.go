@@ -50,9 +50,16 @@ func (f *APIframe) init() {}
 func (f *APIframe) checksum() bool { return false }
 
 func (f *APIframe) add_byte(b uint8) bool {
+
+	if b == ESCAPE_BYTE {
+		f.state = waitingForEscape
+		return false
+	}
+
 	switch f.state {
+
 	case waitingForStart:
-		if isEsc(b) {
+		if b == START_BYTE {
 			f.state = waitingForLengthHi
 			if f.bytesLeft != 0 {
 				panic("new packet inside packet length must have been wrong")
@@ -70,12 +77,15 @@ func (f *APIframe) add_byte(b uint8) bool {
 		f.length = f.lengthHi*255 + f.lengthLo
 		f.bytesLeft = f.length
 		return false
+	case waitingForEscape:
+		b ^= byte(0x20)
+		fallthrough
 	case waitingForData:
-		if f.length > uint(len(f.frame))  {
+		if f.length > uint(len(f.frame)) {
 			f.frame = append(f.frame, b)
 			f.bytesLeft--
 		}
-    if f.bytesLeft == 0		{
+		if f.bytesLeft == 0 {
 			f.state = waitingForCheckSum
 		}
 		return false
