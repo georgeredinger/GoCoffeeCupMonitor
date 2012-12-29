@@ -9,13 +9,31 @@ import "bytes"
 0x7D  Escape control character. Indicates that next byte is escaped.
 
 0x11 0x13  These bytes are software flow control characters.
+
+maximum payload size may be 100 bytes for xbee series 1
+this is probubly the un-escaped payload, so iff all bytes are escaped it would be 200 bytes transferd
 */
 //Xbee API ids: (RX packets only
 const (
-		XBEE_IO64 = byte(0x82) // expect this
-		XBEE_IO16 = byte(0x83) // or this
-		//other API ids should throw an error
+//tx Packets
+  TXreq64      = 0x00  // TX request with 64-bit destination address 5-4
+  TXreq16      = 0x01  // TX request with 16-bit destination address 5-4
+	LocalAT       = 0x08  // Local AT command, immediate action 5-2
+  LocalATqueed  = 0x09  // Local AT command, queued action 5-2
+  RemoteAT64    = 0x17  // Remote AT command with 64-bit destination address 5-3
+//rx Packets 
+  RX64          = 0x80  // RX with 64-bit source address 5-5
+  RX16          = 0x81  // RX with 16-bit source address 5-5
+  Input64       = 0x82  // Input line states with 64-bit source address 5-4
+  Input16       = 0x83  // Input line states with 16-bit source address 5-4
+  LocalATres    = 0x88  // Local AT response 5-2
+  TXres         = 0x89  // TX response 5-5
+  MdmStatus     = 0x8a  // Modem status packet 5-1
+  RmtATres      = 0x97  // Remote AT response 5-3
 )
+
+
+
 //  from: http://www.jsjf.demon.co.uk/xbee/xbee.pdf
 //  Input Line States how to decode API id 0x82 or 0x83
 //  
@@ -71,6 +89,7 @@ const (
 
 type APIframe struct {
 	frame     []byte
+	apiID     byte
 	lengthHi  uint
 	lengthLo  uint
 	length    uint
@@ -174,13 +193,6 @@ func (f *APIframe) add_byte(b uint8) bool {
 
 func (f APIframe) remaining_bytes() uint { return f.bytesLeft }
 
-func (f APIframe) parse() bool {
-	var good bool
-
-	if f.frame[0] == byte(0x7E) {
-		good = true
-	} else {
-		good = false
-	}
-	return good
+func (f APIframe) parse() int {
+	 return int(f.frame[0])
 }

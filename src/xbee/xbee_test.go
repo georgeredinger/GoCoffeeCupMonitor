@@ -2,7 +2,7 @@ package xbee
 
 import (
 	"encoding/hex"
-	//	"fmt"
+//	"fmt"
 	"testing"
 )
 
@@ -46,23 +46,21 @@ const escapedPacket = "7E0002237D31CB"
 //    correct, the sum will equal 0xFF.
 //
 
-const xonPacket = "7E000112237D31CB"
-const xoffPacket = "7E0002237D3113CB"
+const xonPacket = "7E001102237D31CB"
+const xoffPacket ="7E0002237D3113CB"
 
 var frametests = []struct {
 	frame string
-	good  bool
+	apiPacketID int
 }{
-	{"7E00028A066F", true},             //simplist good packet
-	{"00028A066F7E00028A066F", true},   //wait for start (garbage in front)
-	{"7E00028A066F102347921834", true}, //simplist good packet with trailing garbage
-	{"7E00028A066F7E00028A066F", true}, //2 packets in a row
-	{"028A066F7E00028A066F", true},
-	{"066FA7E00028A066F0", true},
-	{helloPacket, true},
-	{escapedPacket, true},
-	{xonPacket, true},
-	{xoffPacket, true},
+	{"7E00028A066F", MdmStatus},             //simplist good packet
+	{"00028A066F7E00028A066F", MdmStatus},   //wait for start (garbage in front)
+	{"7E00028A066F102347921834", MdmStatus}, //simplist good packet with trailing garbage
+	{"7E00028A066F7E00028A066F", MdmStatus}, //2 packets in a row
+	{helloPacket, TXreq16},
+	{escapedPacket, 0x23}, //don't know what type 0x23 is,maybe bogus
+	{xonPacket, 0x23},
+	{xoffPacket, 0x23},
 }
 
 //7E    : API Frame
@@ -72,7 +70,7 @@ var frametests = []struct {
 //6F    : checksum FF – ((8A +06) & FF) = 6F
 //
 
-var packet [256]byte
+var packet [6]byte
 
 func TestFrames(t *testing.T) {
 	for _, f := range frametests {
@@ -87,9 +85,10 @@ func TestFrames(t *testing.T) {
 				break
 			}
 		}
-		//		res:=apiframe.parse()
-		//		 fmt.Printf("result %v\n",res)
-
+		packettype:=apiframe.parse()
+		if packettype != f.apiPacketID {
+			t.Errorf("packet %X, %X  not type %X\n",apiframe.frame,apiframe.frame[0],f.apiPacketID)
+    }
 	}
 	//		fmt.Printf("len %v %X %v %X\n",i,packet,err,f.sum)
 }
