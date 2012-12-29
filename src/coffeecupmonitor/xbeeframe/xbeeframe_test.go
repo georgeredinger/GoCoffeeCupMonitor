@@ -21,7 +21,7 @@ var frametests = [] struct {
 	sum uint8
 }{
 	{"7E00028A066F",0x6f},
-//	{"00028A066F7E00028A066F",0x6f},
+	{"00028A066F7E00028A066F",0x6f},
 //	{"7E00028A066F7E00028A066F",0x6f},
 //	{"028A066F7E00028A066F",0x6f},
 //	{"066FA7E00028A066F",0x6f},
@@ -46,11 +46,12 @@ func TestFrames(t *testing.T) {
 			fmt.Print("oops\n")
 			}
 	  var apiframe APIframe 
+		apiframe.init()
 		for _,b := range([]byte(packet)) {
 			apiframe.add_byte(b)
 		}
-		res:=apiframe.parse()
-		 fmt.Printf("result %v\n",res)
+//		res:=apiframe.parse()
+//		 fmt.Printf("result %v\n",res)
 
 	}
 	//		fmt.Printf("len %v %X %v %X\n",i,packet,err,f.sum)
