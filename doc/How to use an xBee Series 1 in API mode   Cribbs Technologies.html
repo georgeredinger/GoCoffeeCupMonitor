@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<!-- saved from url=(0085)http://www.cribbstechnologies.com/2011/02/04/how-to-use-an-xbee-series-1-in-api-mode/ -->
+<html dir="ltr" lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<title>How to use an xBee Series 1 in API mode | Cribbs Technologies</title>
+<link rel="profile" href="http://gmpg.org/xfn/11">
+<link rel="stylesheet" type="text/css" media="all" href="./How to use an xBee Series 1 in API mode   Cribbs Technologies_files/style.css">
+<link rel="pingback" href="http://www.cribbstechnologies.com/xmlrpc.php">
+<link rel="alternate" type="application/rss+xml" title="Cribbs Technologies » Feed" href="http://www.cribbstechnologies.com/feed/">
+<link rel="alternate" type="application/rss+xml" title="Cribbs Technologies » Comments Feed" href="http://www.cribbstechnologies.com/comments/feed/">
+<link rel="alternate" type="application/rss+xml" title="Cribbs Technologies » How to use an xBee Series 1 in API mode Comments Feed" href="http://www.cribbstechnologies.com/2011/02/04/how-to-use-an-xbee-series-1-in-api-mode/feed/">
+<link rel="stylesheet" id="wp-pagenavi-css" href="./How to use an xBee Series 1 in API mode   Cribbs Technologies_files/pagenavi-css.css" type="text/css" media="all">
+<script type="text/javascript" async="" src="./How to use an xBee Series 1 in API mode   Cribbs Technologies_files/ga.js"></script><script type="text/javascript" src="./How to use an xBee Series 1 in API mode   Cribbs Technologies_files/comment-reply.js"></script>
+<script type="text/javascript" src="./How to use an xBee Series 1 in API mode   Cribbs Technologies_files/jquery.js"></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.cribbstechnologies.com/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.cribbstechnologies.com/wp-includes/wlwmanifest.xml"> 
+<link rel="prev" title="Install Google Android applications from your SD card" href="http://www.cribbstechnologies.com/2009/10/22/install-google-android-applications-from-your-sd-card/">
+<link rel="next" title="Sparkfun Serial LCD Backpack" href="http://www.cribbstechnologies.com/2011/02/05/sparkfun-serial-lcd-backpack/">
+<meta name="generator" content="WordPress 3.4.2">
+<link rel="canonical" href="./How to use an xBee Series 1 in API mode   Cribbs Technologies_files/How to use an xBee Series 1 in API mode   Cribbs Technologies.html">
+<link rel="shortlink" href="http://www.cribbstechnologies.com/?p=16">
+<link href="./How to use an xBee Series 1 in API mode   Cribbs Technologies_files/shCore.css" type="text/css" rel="stylesheet"><link href="./How to use an xBee Series 1 in API mode   Cribbs Technologies_files/shThemeDefault.css" type="text/css" rel="stylesheet" id="shTheme"><!-- Google Analytics Injector 1.1 from http://www.geckosolutions.se/blog/wordpress-plugins/ -->
+<script type="text/javascript">
+	var site = '' + document.location;
+	if (site.indexOf('www.cribbstechnologies.com') > -1 ) {
+    
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-4959172-2']);
+	_gaq.push(['_trackPageview']);
+  
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	})();
+	}
+</script>
+<!-- / Google Analytics Injector -->
+<!-- HeadSpace SEO 3.6.41 by John Godley - urbangiraffe.com -->
+<meta name="description" content="Instructions on how to use an xBee as a wireless serial modem">
+<!-- HeadSpace -->
+</head>
+
+<body class="single single-post postid-16 single-format-standard">
+<div id="wrapper" class="hfeed">
+	<div id="header">
+		<div id="masthead">
+			<div id="branding" role="banner">
+								<div id="site-title">
+					<span>
+						<a href="http://www.cribbstechnologies.com/" title="Cribbs Technologies" rel="home">Cribbs Technologies</a>
+					</span>
+				</div>
+				<div id="site-description">Custom Software and Hardware</div>
+
+										<img src="./How to use an xBee Series 1 in API mode   Cribbs Technologies_files/pcbwallpaper.jpg" width="940" height="198" alt="">
+								</div><!-- #branding -->
+
+			<div id="access" role="navigation">
+			  				<div class="skip-link screen-reader-text"><a href="http://www.cribbstechnologies.com/2011/02/04/how-to-use-an-xbee-series-1-in-api-mode/#content" title="Skip to content">Skip to content</a></div>
+								<div class="menu"><ul><li><a href="http://www.cribbstechnologies.com/" title="Home">Home</a></li><li class="page_item page-item-14"><a href="http://www.cribbstechnologies.com/about-us/">About Us</a></li><li class="page_item page-item-81 current_page_parent"><a href="http://www.cribbstechnologies.com/blog/">Blog</a></li><li class="page_item page-item-261"><a href="http://www.cribbstechnologies.com/interesting-sitesblogs/">Interesting Sites/Blogs</a></li><li class="page_item page-item-86"><a href="http://www.cribbstechnologies.com/partners/">Partners</a></li><li class="page_item page-item-120"><a href="http://www.cribbstechnologies.com/portfolio/">Portfolio</a></li><li class="page_item page-item-70"><a href="http://www.cribbstechnologies.com/products/">Products</a></li><li class="page_item page-item-361"><a href="http://www.cribbstechnologies.com/remoteoid-alpha-program/">Remoteoid Alpha Program</a></li></ul></div>
+			</div><!-- #access -->
+		</div><!-- #masthead -->
+	</div><!-- #header -->
+
+	<div id="main">
+
+		<div id="container">
+			<div id="content" role="main">
+
+			
+
+				<div id="nav-above" class="navigation">
+					<div class="nav-previous"><a href="http://www.cribbstechnologies.com/2009/10/22/install-google-android-applications-from-your-sd-card/" rel="prev"><span class="meta-nav">←</span> Install Google Android applications from your SD card</a></div>
+					<div class="nav-next"><a href="http://www.cribbstechnologies.com/2011/02/05/sparkfun-serial-lcd-backpack/" rel="next">Sparkfun Serial LCD Backpack <span class="meta-nav">→</span></a></div>
+				</div><!-- #nav-above -->
+
+				<div id="post-16" class="post-16 post type-post status-publish format-standard hentry category-arduino tag-api-mode tag-arduino tag-serial tag-servo tag-softwareserial tag-sparkfun tag-xbee">
+					<h1 class="entry-title">How to use an xBee Series 1 in API mode</h1>
+
+					<div class="entry-meta">
+						<span class="meta-prep meta-prep-author">Posted on</span> <a href="./How to use an xBee Series 1 in API mode   Cribbs Technologies_files/How to use an xBee Series 1 in API mode   Cribbs Technologies.html" title="12:00 am" rel="bookmark"><span class="entry-date">February 4, 2011</span></a> <span class="meta-sep">by</span> <span class="author vcard"><a class="url fn n" href="http://www.cribbstechnologies.com/author/admin/" title="View all posts by admin">admin</a></span>					</div><!-- .entry-meta -->
+
+					<div class="entry-content">
+						<h2 class="headline2">Gathering Parts</h2>
+<p>The first thing I did was dig through my boxes of carefully collected (but not so carefully stored) junk to see if I could borrow parts from anything. As it turns out, I had 3 original Xbox controllers that have fairly common, and fairly inexpensive analog joysticks in them. The way the controllers are designed, removing them was dead simple.</p>
+<p><span id="more-16"></span></p>
+<p>I took my trusty multi-meter and went about seeing their resistances. After determining this, I attached them to an Arduino’s analog input pins and wrote some code to read the value from the pin, map it to the servo’s preferred range and output it to the serial console. Success!</p>
+<p>My background in R/C electronics isn’t that strong so it took a while to find a local hobby shop that would have spare parts. As it turns out, hobby shops seem to be something of a dying breed. After about 45 minutes of driving I found a shop that sold HiTek hobby servos with metal gears inside rated for quite a bit of torque. These will be excellent for interfacing with the hydraulic controls on the lift itself.</p>
+<h2 class="headline2">Interfacing with an Arduino</h2>
+<p>I included the <a href="http://www.arduino.cc/playground/ComponentLib/Servo" target="_new">SoftwareServo </a>library for the Arduino to my sketch and hooked up the two servos to 2 digital pins on the Arduino. Everything worked as I’d hoped; each joystick’s vertical movement perfectly corresponded to the movement of the horn on the servo. There was just one problem; the controls were tethered to the circuit controlling the servos.</p>
+<p>I did a little digging and found the <a href="http://www.sparkfun.com/products/8665" target="_new">xBee</a>, a small radio that’s capable of transmitting up to 8 lines of input across a RF serial modem. For around $20 from sparkfun you get a lot of ability. The xBee runs on 3.3v and I wanted it to be portable so I also ordered a 3.3v Li-Po battery pack.</p>
+<h2 class="headline2">Understanding the xBee</h2>
+<p>By default, the xBee operates in a mode that I could see being useful in some applications, just not mine. Basically, the input pins of one radio can be mapped virtually to be output pins on a receiving radio. For example: you have a switch hooked up to DIO0 on one xbee and a LED hooked up to DIO0 on another. In this pin-mapping mode, if the radios are programmed correctly, you’d press the button on the sending radio and the LED on the receiving radio would light up. Spiffy. It’s also got built-in analog to digital converters on a few of the inputs that convert the voltage range into values of 0-1024. The bad part about this is that these values map only to the PWM outputs of the xBee.</p>
+<p>Enter API mode. In this mode, the values received via the radio are sent out the UART, serial port, of the xBee. The data follows this format:</p>
+<p><img src="./How to use an xBee Series 1 in API mode   Cribbs Technologies_files/N4z7.screenshot_2-4-2011_12-33 PM.png" alt=""></p>
+<p><img src="./How to use an xBee Series 1 in API mode   Cribbs Technologies_files/Bjyu.screenshot_2-4-2011_12-42 PM.png" alt=""></p>
+<p>For whatever reason, the documentation is wrong here. It says the API Identifier will be 0×81 but it’s actually 0×83. Also, the “Length” portion is actually of the “Sample Data” format above. This means for every sample “packet” the xBee receives, you’ll start reading at 0x7E and continue reading until you see it again. Despite how the first graphic looks, you won’t actually receive the header. I configured my xBee to send the status of all of the analog signals all at once so I didn’t really care about the length or the checksum bytes. If, like me,&nbsp; you don’t have any of the digital I/O enabled, the analog data will be the only thing sent over. The ADC data is “represented as an unsigned 10-bit value right-justified on a 16-bit boundary.” I didn’t understand this at first so someone had to explain it to me. Basically you’ll get 000000XX XXXXXXXX where X is the actual data. In order to get this data, you’ll have to grab both bytes, shift the first one 8 bytes left and add the two values together. I got most of my understanding in code from <a href="http://nootropicdesign.com/projectlab/2009/11/01/wireless-temperature-sensor/" target="_new">this guy</a>. His code is really flexible and allows for variable input. This is great if you’re not sure what’s going to come out of the other side, but in this case you will be.</p>
+<h2 class="headline2">Configuring the xBee</h2>
+<p>Enough about the code. Let’s configure the xBees. You’ll need a windows computer and some sort of interface to connect it to the computer. I used one of <a href="http://www.sparkfun.com/products/8687" target="_new">these.</a> Digi makes a program called X-CTU that will allow you to update firmware as well as read and write configurations to/from the xBee. This <a href="http://www.instructables.com/id/Configuring-XBees-for-API-Mode/" target="_new">instructable</a> gives a bunch of information on this process with a lot of screen shots.</p>
+<h2 class="headline2">Better Examples</h2>
+<p>Here’s an example packet that would be sent: 7E 00 00 81 00 00 40 00 01 33 E0 Ignore the length and checksum in my example, they’re just placeholders. Let’s assume that we’ve got DIO0 set to ADC. In this example, the value passed from the xBee is 01 33 which converts to 000100110011 in binary or 307 in decimal. If you had all 9 inputs set as digital inputs, this value would mean that inputs 0, 1, 4, 5 and 8 were high and 2, 3, 6 and 7 were low. If you received the packet 7E 00 00 81 00 00 40 00 01 33 00 3F E0, you could tell that you either had two ADCs enabled or DIO and a single ADC. I won’t bore you with any more detail but if you have any questions or comments, feel free to drop a line at brian@cribbstechnologies.com</p>
+											</div><!-- .entry-content -->
+
+
+					<div class="entry-utility">
+						This entry was posted in <a href="http://www.cribbstechnologies.com/category/arduino/" title="View all posts in Arduino" rel="category tag">Arduino</a> and tagged <a href="http://www.cribbstechnologies.com/tag/api-mode/" rel="tag">API mode</a>, <a href="http://www.cribbstechnologies.com/tag/arduino/" rel="tag">Arduino</a>, <a href="http://www.cribbstechnologies.com/tag/serial/" rel="tag">Serial</a>, <a href="http://www.cribbstechnologies.com/tag/servo/" rel="tag">Servo</a>, <a href="http://www.cribbstechnologies.com/tag/softwareserial/" rel="tag">SoftwareSerial</a>, <a href="http://www.cribbstechnologies.com/tag/sparkfun/" rel="tag">Sparkfun</a>, <a href="http://www.cribbstechnologies.com/tag/xbee/" rel="tag">XBee</a>. Bookmark the <a href="./How to use an xBee Series 1 in API mode   Cribbs Technologies_files/How to use an xBee Series 1 in API mode   Cribbs Technologies.html" title="Permalink to How to use an xBee Series 1 in API mode" rel="bookmark">permalink</a>.											</div><!-- .entry-utility -->
+				</div><!-- #post-## -->
+
+				<div id="nav-below" class="navigation">
+					<div class="nav-previous"><a href="http://www.cribbstechnologies.com/2009/10/22/install-google-android-applications-from-your-sd-card/" rel="prev"><span class="meta-nav">←</span> Install Google Android applications from your SD card</a></div>
+					<div class="nav-next"><a href="http://www.cribbstechnologies.com/2011/02/05/sparkfun-serial-lcd-backpack/" rel="next">Sparkfun Serial LCD Backpack <span class="meta-nav">→</span></a></div>
+				</div><!-- #nav-below -->
+
+				
+			<div id="comments">
+
+
+			<h3 id="comments-title">One Response to <em>How to use an xBee Series 1 in API mode</em></h3>
+
+
+			<ol class="commentlist">
+					<li class="comment even thread-even depth-1" id="li-comment-112">
+		<div id="comment-112">
+		<div class="comment-author vcard">
+			<img alt="" src="./How to use an xBee Series 1 in API mode   Cribbs Technologies_files/969f9f0a54785000bad54cd08b969541" class="avatar avatar-40 photo" height="40" width="40">			<cite class="fn">Kavejska</cite> <span class="says">says:</span>		</div><!-- .comment-author .vcard -->
+		
+		<div class="comment-meta commentmetadata"><a href="http://www.cribbstechnologies.com/2011/02/04/how-to-use-an-xbee-series-1-in-api-mode/#comment-112">
+			April 6, 2012 at 10:14 am</a>		</div><!-- .comment-meta .commentmetadata -->
+
+		<div class="comment-body"><p>Hello!</p>
+<p>I have a problem triggering digital output (like DO0) on the remote ZigBee.</p>
+<p>Case 1:<br>
+I know I can trigger it like this:<br>
+- setting digital input on the base ZigBee<br>
+- setting digital output on the remote ZigBee (DO LOW)<br>
+- and if configured right the input state on the base ZigBee is transferred to the digital output on remote ZigBee</p>
+<p>I managed to do that, but I would like to trigger it via data packets. </p>
+<p>Case 2:<br>
+So I tried with setting API packets that set the digital output on the remote ZigBee. I managed to change the digital output on remote ZigBee with commands ATD0=4 (DO LOW) ATD0=5 (DO HIGH).</p>
+<p>DO LOW API command:<br>
+7E 00 10 17 05 00 13 A2 00 40 08 C9 80 00 02 02 44 30 04 21</p>
+<p>DO HIGH API command:<br>
+7E 00 10 17 05 00 13 A2 00 40 08 C9 80 00 02 02 44 30 05 20</p>
+<p>Problem:<br>
+But the problem I have is that sometime the communication between the base and remote might be lost. And if the digital output on the remote ZigBee is set to 3,3V (DO HIGH) and the communication is lost, the digital output would stay at the 3,3V. I want it to “reset” to 0V. In “case 1″ when I tried to trigger the digital output with digital input, you can set the reset timer for that digital output (command ATT0) and it did the work (the digital input reset to value 0V), but you can’t use that in the case 2.</p>
+<p>Question:<br>
+Does anybody know what is the API format of the packet to simulate case 1 – I/O line passing (case 1 data packets)?<br>
+Do you have any other ideas how to “reset” the digital output to 0V.</p>
+</div>
+
+		<div class="reply">
+			<a class="comment-reply-link" href="http://www.cribbstechnologies.com/2011/02/04/how-to-use-an-xbee-series-1-in-api-mode/?replytocom=112#respond" onclick="return addComment.moveForm(&quot;comment-112&quot;, &quot;112&quot;, &quot;respond&quot;, &quot;16&quot;)">Reply</a>		</div><!-- .reply -->
+	</div><!-- #comment-##  -->
+
+	</li>
+			</ol>
+
+
+
+								<div id="respond">
+				<h3 id="reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="http://www.cribbstechnologies.com/2011/02/04/how-to-use-an-xbee-series-1-in-api-mode/#respond" style="display:none;">Cancel reply</a></small></h3>
+									<form action="http://www.cribbstechnologies.com/wp-comments-post.php" method="post" id="commentform">
+																			<p class="comment-notes">Your email address will not be published. Required fields are marked <span class="required">*</span></p>							<p class="comment-form-author"><label for="author">Name</label> <span class="required">*</span><input id="author" name="author" type="text" value="" size="30" aria-required="true"></p>
+<p class="comment-form-email"><label for="email">Email</label> <span class="required">*</span><input id="email" name="email" type="text" value="" size="30" aria-required="true"></p>
+<p class="comment-form-url"><label for="url">Website</label><input id="url" name="url" type="text" value="" size="30"></p>
+												<p class="comment-form-comment"><label for="comment">Comment</label><textarea id="comment" name="comment" cols="45" rows="8" aria-required="true"></textarea></p>						<p class="form-allowed-tags">You may use these <abbr title="HyperText Markup Language">HTML</abbr> tags and attributes:  <code>&lt;a href="" title=""&gt; &lt;abbr title=""&gt; &lt;acronym title=""&gt; &lt;b&gt; &lt;blockquote cite=""&gt; &lt;cite&gt; &lt;code&gt; &lt;del datetime=""&gt; &lt;em&gt; &lt;i&gt; &lt;q cite=""&gt; &lt;strike&gt; &lt;strong&gt; </code></p>						<p class="form-submit">
+							<input name="submit" type="submit" id="submit" value="Post Comment">
+							<input type="hidden" name="comment_post_ID" value="16" id="comment_post_ID">
+<input type="hidden" name="comment_parent" id="comment_parent" value="0">
+						</p>
+						<p style="display: none;"><input type="hidden" id="akismet_comment_nonce" name="akismet_comment_nonce" value="d706e03eaa"></p>					</form>
+							</div><!-- #respond -->
+						
+</div><!-- #comments -->
+
+
+			</div><!-- #content -->
+		</div><!-- #container -->
+
+
+		<div id="primary" class="widget-area" role="complementary">
+			<ul class="xoxo">
+
+<li id="search-2" class="widget-container widget_search"><form role="search" method="get" id="searchform" action="http://www.cribbstechnologies.com/">
+	<div><label class="screen-reader-text" for="s">Search for:</label>
+	<input type="text" value="" name="s" id="s">
+	<input type="submit" id="searchsubmit" value="Search">
+	</div>
+	</form></li>		<li id="recent-posts-2" class="widget-container widget_recent_entries">		<h3 class="widget-title">Recent Posts</h3>		<ul>
+				<li><a href="http://www.cribbstechnologies.com/2012/08/31/drobo-fs-and-droboports-turbocharge-your-nas/" title="Drobo-FS and droboports; turbocharge your NAS">Drobo-FS and droboports; turbocharge your NAS</a></li>
+				<li><a href="http://www.cribbstechnologies.com/2012/06/30/intro-to-cnc-2/" title="Intro to CNC 2">Intro to CNC 2</a></li>
+				<li><a href="http://www.cribbstechnologies.com/2012/04/19/send-mail-easily-from-a-java-application-with-mandrill/" title="Send mail easily from a Java application with Mandrill">Send mail easily from a Java application with Mandrill</a></li>
+				<li><a href="http://www.cribbstechnologies.com/2011/10/08/technology-introduction-will-grandma-use-it/" title="Technology introduction – Will grandma use it?">Technology introduction – Will grandma use it?</a></li>
+				<li><a href="http://www.cribbstechnologies.com/2011/06/22/loading-css-from-a-jar-file-evaluating-el/" title="Loading CSS from a JAR file evaluating EL">Loading CSS from a JAR file evaluating EL</a></li>
+				</ul>
+		</li><li id="archives-2" class="widget-container widget_archive"><h3 class="widget-title">Archives</h3>		<ul>
+			<li><a href="http://www.cribbstechnologies.com/2012/08/" title="August 2012">August 2012</a></li>
+	<li><a href="http://www.cribbstechnologies.com/2012/06/" title="June 2012">June 2012</a></li>
+	<li><a href="http://www.cribbstechnologies.com/2012/04/" title="April 2012">April 2012</a></li>
+	<li><a href="http://www.cribbstechnologies.com/2011/10/" title="October 2011">October 2011</a></li>
+	<li><a href="http://www.cribbstechnologies.com/2011/06/" title="June 2011">June 2011</a></li>
+	<li><a href="http://www.cribbstechnologies.com/2011/04/" title="April 2011">April 2011</a></li>
+	<li><a href="http://www.cribbstechnologies.com/2011/03/" title="March 2011">March 2011</a></li>
+	<li><a href="http://www.cribbstechnologies.com/2011/02/" title="February 2011">February 2011</a></li>
+	<li><a href="http://www.cribbstechnologies.com/2009/10/" title="October 2009">October 2009</a></li>
+		</ul>
+</li><li id="tag_cloud-3" class="widget-container widget_tag_cloud"><h3 class="widget-title">Frequent Topics</h3><div class="tagcloud"><a href="http://www.cribbstechnologies.com/tag/595/" class="tag-link-51" title="1 topic" style="font-size: 8pt;">595</a>
+<a href="http://www.cribbstechnologies.com/tag/android/" class="tag-link-16" title="2 topics" style="font-size: 12.581818181818pt;">Android</a>
+<a href="http://www.cribbstechnologies.com/tag/api-mode/" class="tag-link-11" title="1 topic" style="font-size: 8pt;">API mode</a>
+<a href="http://www.cribbstechnologies.com/tag/apk/" class="tag-link-17" title="1 topic" style="font-size: 8pt;">APK</a>
+<a href="http://www.cribbstechnologies.com/tag/arduino/" class="tag-link-4" title="5 topics" style="font-size: 20.218181818182pt;">Arduino</a>
+<a href="http://www.cribbstechnologies.com/tag/bash/" class="tag-link-58" title="1 topic" style="font-size: 8pt;">bash</a>
+<a href="http://www.cribbstechnologies.com/tag/clone/" class="tag-link-33" title="1 topic" style="font-size: 8pt;">clone</a>
+<a href="http://www.cribbstechnologies.com/tag/cygwin/" class="tag-link-56" title="1 topic" style="font-size: 8pt;">cygwin</a>
+<a href="http://www.cribbstechnologies.com/tag/dx160/" class="tag-link-25" title="1 topic" style="font-size: 8pt;">DX160</a>
+<a href="http://www.cribbstechnologies.com/tag/eeprom/" class="tag-link-31" title="1 topic" style="font-size: 8pt;">EEPROM</a>
+<a href="http://www.cribbstechnologies.com/tag/el/" class="tag-link-67" title="2 topics" style="font-size: 12.581818181818pt;">EL</a>
+<a href="http://www.cribbstechnologies.com/tag/globalcache/" class="tag-link-39" title="2 topics" style="font-size: 12.581818181818pt;">GlobalCache</a>
+<a href="http://www.cribbstechnologies.com/tag/graphic-lcd/" class="tag-link-28" title="1 topic" style="font-size: 8pt;">Graphic LCD</a>
+<a href="http://www.cribbstechnologies.com/tag/hack/" class="tag-link-8" title="1 topic" style="font-size: 8pt;">hack</a>
+<a href="http://www.cribbstechnologies.com/tag/home-automation/" class="tag-link-15" title="2 topics" style="font-size: 12.581818181818pt;">home automation</a>
+<a href="http://www.cribbstechnologies.com/tag/ie/" class="tag-link-48" title="1 topic" style="font-size: 8pt;">IE</a>
+<a href="http://www.cribbstechnologies.com/tag/infrared/" class="tag-link-37" title="2 topics" style="font-size: 12.581818181818pt;">Infrared</a>
+<a href="http://www.cribbstechnologies.com/tag/internet-explorer/" class="tag-link-49" title="1 topic" style="font-size: 8pt;">Internet Explorer</a>
+<a href="http://www.cribbstechnologies.com/tag/ip2ir/" class="tag-link-38" title="2 topics" style="font-size: 12.581818181818pt;">IP2IR</a>
+<a href="http://www.cribbstechnologies.com/tag/ir/" class="tag-link-36" title="2 topics" style="font-size: 12.581818181818pt;">IR</a>
+<a href="http://www.cribbstechnologies.com/tag/jar/" class="tag-link-68" title="2 topics" style="font-size: 12.581818181818pt;">JAR</a>
+<a href="http://www.cribbstechnologies.com/tag/java-2/" class="tag-link-35" title="6 topics" style="font-size: 22pt;">java</a>
+<a href="http://www.cribbstechnologies.com/tag/javascript-2/" class="tag-link-34" title="4 topics" style="font-size: 18.181818181818pt;">javascript</a>
+<a href="http://www.cribbstechnologies.com/tag/jquery/" class="tag-link-19" title="3 topics" style="font-size: 15.636363636364pt;">jQuery</a>
+<a href="http://www.cribbstechnologies.com/tag/jquery-ui/" class="tag-link-40" title="1 topic" style="font-size: 8pt;">jQuery UI</a>
+<a href="http://www.cribbstechnologies.com/tag/lcd/" class="tag-link-27" title="2 topics" style="font-size: 12.581818181818pt;">LCD</a>
+<a href="http://www.cribbstechnologies.com/tag/manual-install/" class="tag-link-18" title="1 topic" style="font-size: 8pt;">manual install</a>
+<a href="http://www.cribbstechnologies.com/tag/mongodb/" class="tag-link-44" title="2 topics" style="font-size: 12.581818181818pt;">MongoDB</a>
+<a href="http://www.cribbstechnologies.com/tag/orm/" class="tag-link-43" title="2 topics" style="font-size: 12.581818181818pt;">ORM</a>
+<a href="http://www.cribbstechnologies.com/tag/parallax/" class="tag-link-29" title="1 topic" style="font-size: 8pt;">Parallax</a>
+<a href="http://www.cribbstechnologies.com/tag/rfid/" class="tag-link-7" title="2 topics" style="font-size: 12.581818181818pt;">RFID</a>
+<a href="http://www.cribbstechnologies.com/tag/schlage/" class="tag-link-6" title="1 topic" style="font-size: 8pt;">Schlage</a>
+<a href="http://www.cribbstechnologies.com/tag/serial/" class="tag-link-26" title="3 topics" style="font-size: 15.636363636364pt;">Serial</a>
+<a href="http://www.cribbstechnologies.com/tag/servo/" class="tag-link-12" title="1 topic" style="font-size: 8pt;">Servo</a>
+<a href="http://www.cribbstechnologies.com/tag/shell/" class="tag-link-57" title="1 topic" style="font-size: 8pt;">shell</a>
+<a href="http://www.cribbstechnologies.com/tag/shift-register/" class="tag-link-52" title="1 topic" style="font-size: 8pt;">shift register</a>
+<a href="http://www.cribbstechnologies.com/tag/simulator/" class="tag-link-53" title="1 topic" style="font-size: 8pt;">simulator</a>
+<a href="http://www.cribbstechnologies.com/tag/softwareserial/" class="tag-link-13" title="2 topics" style="font-size: 12.581818181818pt;">SoftwareSerial</a>
+<a href="http://www.cribbstechnologies.com/tag/sparkfun/" class="tag-link-24" title="2 topics" style="font-size: 12.581818181818pt;">Sparkfun</a>
+<a href="http://www.cribbstechnologies.com/tag/ttl/" class="tag-link-30" title="1 topic" style="font-size: 8pt;">TTL</a>
+<a href="http://www.cribbstechnologies.com/tag/x-10/" class="tag-link-14" title="1 topic" style="font-size: 8pt;">X-10</a>
+<a href="http://www.cribbstechnologies.com/tag/x10/" class="tag-link-9" title="1 topic" style="font-size: 8pt;">X10</a>
+<a href="http://www.cribbstechnologies.com/tag/xbee/" class="tag-link-10" title="1 topic" style="font-size: 8pt;">XBee</a>
+<a href="http://www.cribbstechnologies.com/tag/xml-mapping/" class="tag-link-45" title="1 topic" style="font-size: 8pt;">XML mapping</a>
+<a href="http://www.cribbstechnologies.com/tag/z-index/" class="tag-link-50" title="1 topic" style="font-size: 8pt;">z-index</a></div>
+</li><li id="meta-2" class="widget-container widget_meta"><h3 class="widget-title">Meta</h3>			<ul>
+						<li><a href="http://www.cribbstechnologies.com/wp-login.php">Log in</a></li>
+			<li><a href="http://www.cribbstechnologies.com/feed/" title="Syndicate this site using RSS 2.0">Entries <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://www.cribbstechnologies.com/comments/feed/" title="The latest comments to all posts in RSS">Comments <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://wordpress.org/" title="Powered by WordPress, state-of-the-art semantic personal publishing platform.">WordPress.org</a></li>
+						</ul>
+</li>			</ul>
+		</div><!-- #primary .widget-area -->
+
+	</div><!-- #main -->
+
+	<div id="footer" role="contentinfo">
+		<div id="colophon">
+
+
+
+			<div id="site-info">
+				<a href="http://www.cribbstechnologies.com/" title="Cribbs Technologies" rel="home">
+					Cribbs Technologies				</a>
+			</div><!-- #site-info -->
+
+		</div><!-- #colophon -->
+	</div><!-- #footer -->
+
+</div><!-- #wrapper -->
+
+<script type="text/javascript" src="./How to use an xBee Series 1 in API mode   Cribbs Technologies_files/jquery.ui.core.min.js"></script>
+
+
+
+<!-- Performance optimized by W3 Total Cache. Learn more: http://www.w3-edge.com/wordpress-plugins/
+
+Served from: www.cribbstechnologies.com @ 2012-12-30 13:10:31 --></body></html>
