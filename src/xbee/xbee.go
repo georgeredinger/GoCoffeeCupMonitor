@@ -1,7 +1,10 @@
 package xbee
 
-import "fmt"
-import "bytes"
+import (
+	"bytes"
+	"errors"
+	"fmt"
+)
 
 /*
 0x7E  Start frame delimiter.
@@ -15,24 +18,22 @@ this is probubly the un-escaped payload, so iff all bytes are escaped it would b
 */
 //Xbee API ids: (RX packets only
 const (
-//tx Packets
-  TXreq64      = 0x00  // TX request with 64-bit destination address 5-4
-  TXreq16      = 0x01  // TX request with 16-bit destination address 5-4
-	LocalAT       = 0x08  // Local AT command, immediate action 5-2
-  LocalATqueed  = 0x09  // Local AT command, queued action 5-2
-  RemoteAT64    = 0x17  // Remote AT command with 64-bit destination address 5-3
-//rx Packets 
-  RX64          = 0x80  // RX with 64-bit source address 5-5
-  RX16          = 0x81  // RX with 16-bit source address 5-5
-  Input64       = 0x82  // Input line states with 64-bit source address 5-4
-  Input16       = 0x83  // Input line states with 16-bit source address 5-4
-  LocalATres    = 0x88  // Local AT response 5-2
-  TXres         = 0x89  // TX response 5-5
-  MdmStatus     = 0x8a  // Modem status packet 5-1
-  RmtATres      = 0x97  // Remote AT response 5-3
+	//tx Packets
+	TXreq64      = 0x00 // TX request with 64-bit destination address 5-4
+	TXreq16      = 0x01 // TX request with 16-bit destination address 5-4
+	LocalAT      = 0x08 // Local AT command, immediate action 5-2
+	LocalATqueed = 0x09 // Local AT command, queued action 5-2
+	RemoteAT64   = 0x17 // Remote AT command with 64-bit destination address 5-3
+	//rx Packets 
+	RX64       = 0x80 // RX with 64-bit source address 5-5
+	RX16       = 0x81 // RX with 16-bit source address 5-5
+	Input64    = 0x82 // Input line states with 64-bit source address 5-4
+	Input16    = 0x83 // Input line states with 16-bit source address 5-4
+	LocalATres = 0x88 // Local AT response 5-2
+	TXres      = 0x89 // TX response 5-5
+	MdmStatus  = 0x8a // Modem status packet 5-1
+	RmtATres   = 0x97 // Remote AT response 5-3
 )
-
-
 
 //  from: http://www.jsjf.demon.co.uk/xbee/xbee.pdf
 //  Input Line States how to decode API id 0x82 or 0x83
@@ -42,15 +43,15 @@ const (
 //  set intervals, and transmit the results to the base. If the base XBee is conﬁgured
 //  to pass such data out through the UART,
 //  the base’s host will receive this packet.
-//  1. Byte: packet type id 0x82 for 64-bit source address, or 0x83 for 16-bit source address.
-//  2. Bytes: source address. 
+// --  1. Byte: packet type id 0x82 for 64-bit source address, or 0x83 for 16-bit source address.
+// -- 2. Bytes: source address. 
 //     Two bytes for 16-bit source addressing, or eight for 64-bit source addressing.
-//  3. Byte: RSSI value.
-//  4. Byte: options.
+// --  3. Byte: RSSI value.
+// --  4. Byte: options.
 //     If bit 1 is set, this is an address broadcast.
 //     If bit 2 is set, it is a PAN broadcast. All other bits are   reserved.
-//  5. Byte: sample quantity. This is the number of full sets of samples in what follows.
-//  6. Word: 2-byte channel indicator msb ﬁrst.
+// -- 5. Byte: sample quantity. This is the number of full sets of samples in what follows.
+// -- 6. Word: 2-byte channel indicator msb ﬁrst.
 //     Bits 14–9 are a 6-bit mask, with 1 for each ADC channel in AD5–AD0
 //     respectively that will be reported.
 //     Bits 8–0 are for the digital lines D8–D0, showing which of them will be included
@@ -65,7 +66,6 @@ const (
 //     16-bit value with the A-D reading in the low-order 10 bits.
 //     A-D readings are given in order from AD0 to AD5.
 //  
-
 
 // escapes
 const (
@@ -104,13 +104,22 @@ func isEsc(b byte) bool {
 }
 
 func (f *APIframe) init() {
-		  f.frame = f.frame[:0]	
-			f.lengthHi = 0
-			f.lengthLo = 0
-			f.length   = 0
-			f.started  = false
-			f.bytesLeft= 0
-			f.checkSum  = 0
+	f.frame = f.frame[:0]
+	f.lengthHi = 0
+	f.lengthLo = 0
+	f.length = 0
+	f.started = false
+	f.bytesLeft = 0
+	f.checkSum = 0
+}
+
+func bitCount(x uint) (n int) {
+	// n accumulates the total bits set in x, counting only set bits
+	for ; x > 0; n++ {
+		// clear the least significant bit set
+		x &= x - 1
+	}
+	return n
 }
 
 func (f *APIframe) checksum() bool { return false }
@@ -193,6 +202,51 @@ func (f *APIframe) add_byte(b uint8) bool {
 
 func (f APIframe) remaining_bytes() uint { return f.bytesLeft }
 
-func (f APIframe) parse() int {
-	 return int(f.frame[0])
+func (f APIframe) parse() (apiID uint, sourceAddress uint, rssi uint,
+	options uint, quality uint, analogChannels uint, analogMeasurements []uint, e error) {
+	apiID = uint(f.frame[0])
+	if apiID != Input16 {
+		return apiID, sourceAddress, rssi, options, quality, analogChannels, analogMeasurements, e
+	}
+	if len(f.frame) > 3 {
+		sourceAddress = uint(f.frame[1])<<8 + uint(f.frame[2])
+	} else {
+		e = errors.New("packet too short (sourceAddress")
+		sourceAddress = 12345678
+	}
+	if len(f.frame) > 4 {
+		rssi = uint(f.frame[3])
+	} else {
+		e = errors.New("packet too short (rssi)")
+		rssi = 8321
+	}
+	if len(f.frame) > 5 {
+		options = uint(f.frame[4])
+	} else {
+		e = errors.New("packet too short (options)")
+		options = 8321
+	}
+	if len(f.frame) > 6 {
+		quality = uint(f.frame[5])
+	} else {
+		e = errors.New("packet too short (quality)")
+		quality = 8321
+	}
+	if len(f.frame) > 8 {
+		analogChannels = uint(uint(f.frame[6])<<8 + uint(f.frame[7]))
+	} else {
+		e = errors.New("packet too short (analogChanels)")
+		analogChannels = 8321
+	}
+
+	channelCount := bitCount(analogChannels)
+	analogMeasurements = make([]uint, channelCount)
+
+	if len(f.frame) > 9 {
+		for i := 0; i < channelCount; i++ {
+			measurement := uint(uint(f.frame[8+i*2])<<8 + uint(f.frame[9+i*2]))
+			analogMeasurements[i] = measurement
+		}
+	}
+	return apiID, sourceAddress, rssi, options, quality, analogChannels, analogMeasurements, e
 }
