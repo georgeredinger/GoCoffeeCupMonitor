@@ -8,6 +8,10 @@ import "time"
 
 var offset int = 0
 
+func init() {
+	fmt.Printf("begin\n")
+}
+
 func main() {
 	var n int
 	fmt.Printf("open\n")
@@ -17,16 +21,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("begin\n")
-
-	if err != nil {
-		log.Fatal(err)
-	}
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("begin\n")
-	buf := make([]byte, 16)
+	buf := make([]byte, 100)
 	for {
 		n, err = s.Read(buf)
 		if err != nil {

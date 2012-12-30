@@ -1,22 +1,69 @@
+/*
+read and decode xbee series 1 packets 
+one byte at a time as they come in
+  from: http://www.jsjf.demon.co.uk/xbee/xbee.pdf
+  Input Line States how to decode 
+
+	API id 0x82 or 0x83
+
+	This packet (0x82 or 0x83) is used when a remote XBee and a base XBee have been conﬁgured 
+  so that the remote will sample its inputs at
+  set intervals, and transmit the results to the base. If the base XBee is conﬁgured
+  to pass such data out through the UART,
+  the base’s host will receive this packet.
+   1. Byte: packet type id 0x82 for 64-bit source address, or 0x83 for 16-bit source address.
+  2. Bytes: source address. 
+     Two bytes for 16-bit source addressing, or eight for 64-bit source addressing.
+   3. Byte: RSSI value.
+   4. Byte: options.
+     If bit 1 is set, this is an address broadcast.
+     If bit 2 is set, it is a PAN broadcast. All other bits are   reserved.
+  5. Byte: sample quantity. This is the number of full sets of samples in what follows.
+  6. Word: 2-byte channel indicator msb ﬁrst.
+     Bits 14–9 are a 6-bit mask, with 1 for each ADC channel in AD5–AD0
+     respectively that will be reported.
+     Bits 8–0 are for the digital lines D8–D0, showing which of them will be included
+     in the values. Bit 15 is not used.
+  7. Word: optional 16-bit bitﬁeld, with bits corresponding to lines D8–D0 
+     as in the channel indicator. Where bits were
+     set in the channel indicator, the corresponding bits here show the 
+     state of the input. These bytes are not present if
+     there are no lines enabled as digital inputs.
+  8. Words: if any bits in the channel indicator were set among the A-D inputs, 
+     those readings now follow. Each is a
+     16-bit value with the A-D reading in the low-order 10 bits.
+     A-D readings are given in order from AD0 to AD5.
+
+*/
+/*
+0x7E  Start frame delimiter.
+0x7D  Escape control character. Indicates that next byte is escaped.
+0x11 0x13  These bytes are software flow control characters.
+*/
+// a packet with 2 analog measurements
+//
+//                  options
+//                   ^
+//                   | qual
+//                   |  |        A0   A1
+//7E 000C 83 0001 24 00 01 0601 01E9 0000 66
+//   |     |   |  |         |             sum
+//   |     |   |  |       channel
+//   |_len |   |  |
+//    type_|   |  |
+//             |  |
+//     source__|  |
+//                |
+//                |_rssi
+//
+
 package xbee
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 )
 
-/*
-0x7E  Start frame delimiter.
-
-0x7D  Escape control character. Indicates that next byte is escaped.
-
-0x11 0x13  These bytes are software flow control characters.
-
-maximum payload size may be 100 bytes for xbee series 1
-this is probubly the un-escaped payload, so iff all bytes are escaped it would be 200 bytes transferd
-*/
-//Xbee API ids: (RX packets only
 const (
 	//tx Packets
 	TXreq64      = 0x00 // TX request with 64-bit destination address 5-4
@@ -35,38 +82,6 @@ const (
 	RmtATres   = 0x97 // Remote AT response 5-3
 )
 
-//  from: http://www.jsjf.demon.co.uk/xbee/xbee.pdf
-//  Input Line States how to decode API id 0x82 or 0x83
-//  
-//  This packet is used when a remote XBee and a base XBee have been conﬁgured 
-//  so that the remote will sample its inputs at
-//  set intervals, and transmit the results to the base. If the base XBee is conﬁgured
-//  to pass such data out through the UART,
-//  the base’s host will receive this packet.
-// --  1. Byte: packet type id 0x82 for 64-bit source address, or 0x83 for 16-bit source address.
-// -- 2. Bytes: source address. 
-//     Two bytes for 16-bit source addressing, or eight for 64-bit source addressing.
-// --  3. Byte: RSSI value.
-// --  4. Byte: options.
-//     If bit 1 is set, this is an address broadcast.
-//     If bit 2 is set, it is a PAN broadcast. All other bits are   reserved.
-// -- 5. Byte: sample quantity. This is the number of full sets of samples in what follows.
-// -- 6. Word: 2-byte channel indicator msb ﬁrst.
-//     Bits 14–9 are a 6-bit mask, with 1 for each ADC channel in AD5–AD0
-//     respectively that will be reported.
-//     Bits 8–0 are for the digital lines D8–D0, showing which of them will be included
-//     in the values. Bit 15 is not used.
-//  7. Word: optional 16-bit bitﬁeld, with bits corresponding to lines D8–D0 
-//     as in the channel indicator. Where bits were
-//     set in the channel indicator, the corresponding bits here show the 
-//     state of the input. These bytes are not present if
-//     there are no lines enabled as digital inputs.
-//  8. Words: if any bits in the channel indicator were set among the A-D inputs, 
-//     those readings now follow. Each is a
-//     16-bit value with the A-D reading in the low-order 10 bits.
-//     A-D readings are given in order from AD0 to AD5.
-//  
-
 // escapes
 const (
 	START_BYTE  = byte(0x7E)
@@ -75,8 +90,7 @@ const (
 	XOFF_BYTE   = byte(0x13)
 )
 
-var ESCAPE_BYTES = []byte{START_BYTE, ESCAPE_BYTE, XON_BYTE, XOFF_BYTE}
-
+// packet rx decoder states -- read_byte()
 const (
 	waitingForStart = iota
 	waitingForLengthHi
@@ -102,19 +116,16 @@ type APIframe struct {
 func init() {
 	fmt.Print("Begin\n")
 }
-func isEsc(b byte) bool {
-	return (bytes.IndexByte(ESCAPE_BYTES, b) != -1)
-}
 
 func (f *APIframe) reset() {
-	f.frame = f.frame[:0] 
+	f.frame = f.frame[:0]
 	f.lengthHi = 0
 	f.lengthLo = 0
 	f.length = 0
 	f.started = false
 	f.bytesLeft = 0
 	f.checkSum = 0
-	f.state = waitingForStart 
+	f.state = waitingForStart
 }
 
 func bitCount(x uint) (n int) {
@@ -254,4 +265,3 @@ func (f APIframe) parse() (apiID uint, sourceAddress uint, rssi uint,
 	}
 	return apiID, sourceAddress, rssi, options, quality, analogChannels, analogMeasurements, e
 }
-

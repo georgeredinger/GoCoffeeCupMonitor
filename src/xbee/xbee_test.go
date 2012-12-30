@@ -1,3 +1,7 @@
+/* test xbee packet decode
+   test against known inputs (packets) 
+	   and outputs (check sums, types, lengths, payloads)
+*/
 package xbee
 
 import (
@@ -5,30 +9,6 @@ import (
 	"fmt"
 	"testing"
 )
-
-/*
-0x7E  Start frame delimiter.
-
-0x7D  Escape control character. Indicates that next byte is escaped.
-
-0x11 0x13  These bytes are software flow control characters.
-*/
-
-//
-//                  options
-//                   ^
-//                   | qual
-//                   |  |        A0   A1
-//7E 000C 83 0001 24 00 01 0601 01E9 0000 66
-//   |     |   |  |         |             sum
-//   |     |   |  |       channel
-//   |_len |   |  |
-//    type_|   |  |
-//             |  |
-//     source__|  |
-//                |
-//                |_rssi
-//
 
 const actualPackets = "7E000C830001240001060001F7000058" +
 	"7E000C830001240001060001E9000066" +
@@ -164,9 +144,9 @@ func TestFrames(t *testing.T) {
 			if apiframe.add_byte(b) {
 				packettype, sourceAddress, rssi, options, quality, analogChannels, measurements, e := apiframe.parse()
 
-		    apiframe.reset() //discard frame once parsed
+				apiframe.reset() //discard frame once parsed
 				if e == nil {
-  				if packettype == Input16 {
+					if packettype == Input16 {
 						fmt.Printf("type: %X sourceAddress %d rssi %d options %b,quality %d,analogChannels %b measurements %d\n",
 							packettype, sourceAddress, rssi, options, quality, analogChannels, measurements)
 						fmt.Printf("measurement %f\n", ((float32(measurements[0])*(1500.0/1023.0)-500)/10.0)*1.8+32.0)
