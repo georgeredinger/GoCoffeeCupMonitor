@@ -78,13 +78,13 @@ const (
 var ESCAPE_BYTES = []byte{START_BYTE, ESCAPE_BYTE, XON_BYTE, XOFF_BYTE}
 
 const (
-	waitingForStart    = 0
-	waitingForLengthHi = 1
-	waitingForLengthLo = 2
-	waitingForData     = 3
-	waitingForCheckSum = 4
-	waitingForEscape   = 5
-	done               = 6
+	waitingForStart = iota
+	waitingForLengthHi
+	waitingForLengthLo
+	waitingForData
+	waitingForCheckSum
+	waitingForEscape
+	done
 )
 
 type APIframe struct {
@@ -99,18 +99,22 @@ type APIframe struct {
 	state     uint8
 }
 
+func init() {
+	fmt.Print("Begin\n")
+}
 func isEsc(b byte) bool {
 	return (bytes.IndexByte(ESCAPE_BYTES, b) != -1)
 }
 
-func (f *APIframe) init() {
-	f.frame = f.frame[:0]
+func (f *APIframe) reset() {
+	f.frame = f.frame[:0] 
 	f.lengthHi = 0
 	f.lengthLo = 0
 	f.length = 0
 	f.started = false
 	f.bytesLeft = 0
 	f.checkSum = 0
+	f.state = waitingForStart 
 }
 
 func bitCount(x uint) (n int) {
@@ -188,7 +192,7 @@ func (f *APIframe) add_byte(b uint8) bool {
 			f.state = waitingForStart
 			fmt.Printf("Checksum %X != %X\n", f.checkSum, b)
 			fmt.Printf("packet: %X,%X\n", f.frame, b)
-			f.init()
+			f.reset()
 			return false // 
 		}
 	case done:
@@ -250,3 +254,4 @@ func (f APIframe) parse() (apiID uint, sourceAddress uint, rssi uint,
 	}
 	return apiID, sourceAddress, rssi, options, quality, analogChannels, analogMeasurements, e
 }
+

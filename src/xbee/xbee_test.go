@@ -122,26 +122,25 @@ var frametests = []struct {
 	{xonPacket, 0x23},
 	{xoffPacket, 0x23},
 	{actualPackets, Input16},
-	{"7E000C830001240001060001E9000066",Input16}, 
-	{"7E000C8300012400010600021000003E",Input16}, 
-	{"7E000C830001240001060001E000006F",Input16}, 
-	{"7E000C830001240001060001EB000064",Input16}, 
-	{"7E000C830001240001060001F400005B",Input16}, 
-	{"7E000C830001240001060001E9000066",Input16}, 
-	{"7E000C830001240001060001F9000056",Input16}, 
-	{"7E000C830001240001060001E500006A",Input16}, 
-	{"7E000C830001240001060001E500006A",Input16}, 
-	{"7E000C830001240001060001F9000056",Input16}, 
-	{"7E000C830001240001060001E500006A",Input16}, 
-	{"7E000C830001240001060001F6000059",Input16}, 
-	{"7E000C830001240001060001DD000072",Input16}, 
-	{"7E000C830001240001060001F500005A",Input16}, 
-	{"7E000C830001240001060001F6000059",Input16}, 
-	{"7E000C8300012400010600023A000014",Input16}, 
-	{"7E000C830001240001060001FF000050",Input16}, 
-	{"7E000C830001240001060001FC000053",Input16}, 
-	{"7E000C830001240001060001FA000055",Input16}, 
-	
+	{"7E000C830001240001060001E9000066", Input16},
+	{"7E000C8300012400010600021000003E", Input16},
+	{"7E000C830001240001060001E000006F", Input16},
+	{"7E000C830001240001060001EB000064", Input16},
+	{"7E000C830001240001060001F400005B", Input16},
+	{"7E000C830001240001060001E9000066", Input16},
+	{"7E000C830001240001060001F9000056", Input16},
+	{"7E000C830001240001060001E500006A", Input16},
+	{"7E000C830001240001060001E500006A", Input16},
+	{"7E000C830001240001060001F9000056", Input16},
+	{"7E000C830001240001060001E500006A", Input16},
+	{"7E000C830001240001060001F6000059", Input16},
+	{"7E000C830001240001060001DD000072", Input16},
+	{"7E000C830001240001060001F500005A", Input16},
+	{"7E000C830001240001060001F6000059", Input16},
+	{"7E000C8300012400010600023A000014", Input16},
+	{"7E000C830001240001060001FF000050", Input16},
+	{"7E000C830001240001060001FC000053", Input16},
+	{"7E000C830001240001060001FA000055", Input16},
 }
 
 //7E    : API Frame
@@ -160,18 +159,18 @@ func TestFrames(t *testing.T) {
 			panic("bad test data\n")
 		}
 		var apiframe APIframe
-		apiframe.init()
+		apiframe.reset()
 		for _, b := range []byte(packet) {
 			if apiframe.add_byte(b) {
 				packettype, sourceAddress, rssi, options, quality, analogChannels, measurements, e := apiframe.parse()
+
+		    apiframe.reset() //discard frame once parsed
 				if e == nil {
-					if packettype != f.apiPacketID {
-						t.Errorf("packet %X, %X  not type %X\n", apiframe.frame, apiframe.frame[0], f.apiPacketID)
-					}
-					if packettype == Input16 {
+  				if packettype == Input16 {
 						fmt.Printf("type: %X sourceAddress %d rssi %d options %b,quality %d,analogChannels %b measurements %d\n",
 							packettype, sourceAddress, rssi, options, quality, analogChannels, measurements)
 						fmt.Printf("measurement %f\n", ((float32(measurements[0])*(1500.0/1023.0)-500)/10.0)*1.8+32.0)
+
 					}
 				} else {
 					fmt.Printf("packet parse failed %v\n", e)
