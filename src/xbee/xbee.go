@@ -128,7 +128,7 @@ func (f *APIframe) reset() {
 	f.state = waitingForStart
 }
 
-func bitCount(x uint) (n int) {
+func bitCount(x uint) (n uint) {
 	// n accumulates the total bits set in x, counting only set bits
 	for ; x > 0; n++ {
 		// clear the least significant bit set
@@ -218,10 +218,10 @@ func (f *APIframe) add_byte(b uint8) bool {
 func (f APIframe) remaining_bytes() uint { return f.bytesLeft }
 
 func (f APIframe) parse() (apiID uint, sourceAddress uint, rssi uint,
-	options uint, quality uint, analogChannels uint, analogMeasurements []uint, e error) {
+	options uint, quantity uint, analogChannels uint, analogMeasurements []uint, e error) {
 	apiID = uint(f.frame[0])
 	if apiID != Input16 {
-		return apiID, sourceAddress, rssi, options, quality, analogChannels, analogMeasurements, e
+		return apiID, sourceAddress, rssi, options, quantity, analogChannels, analogMeasurements, e
 	}
 	if len(f.frame) > 3 {
 		sourceAddress = uint(f.frame[1])<<8 + uint(f.frame[2])
@@ -242,10 +242,10 @@ func (f APIframe) parse() (apiID uint, sourceAddress uint, rssi uint,
 		options = 8321
 	}
 	if len(f.frame) > 6 {
-		quality = uint(f.frame[5])
+		quantity = uint(f.frame[5])
 	} else {
-		e = errors.New("packet too short (quality)")
-		quality = 8321
+		e = errors.New("packet too short (quantity)")
+		quantity = 8321
 	}
 	if len(f.frame) > 8 {
 		analogChannels = uint(uint(f.frame[6])<<8 + uint(f.frame[7]))
@@ -255,13 +255,15 @@ func (f APIframe) parse() (apiID uint, sourceAddress uint, rssi uint,
 	}
 
 	channelCount := bitCount(analogChannels)
-	analogMeasurements = make([]uint, channelCount)
+	analogMeasurements = make([]uint, channelCount*quantity)
 
 	if len(f.frame) > 9 {
-		for i := 0; i < channelCount; i++ {
-			measurement := uint(uint(f.frame[8+i*2])<<8 + uint(f.frame[9+i*2]))
-			analogMeasurements[i] = measurement
-		}
+		for q := uint(0); q < quantity;q++ {
+			for i := uint(0); i < channelCount; i++ {
+				measurement := uint(uint(f.frame[(8+i*2)+q*channelCount*2])<<8 + uint(f.frame[(9+i*2)+q*channelCount*2]))
+				analogMeasurements[i+q] = measurement
+	  	}
 	}
-	return apiID, sourceAddress, rssi, options, quality, analogChannels, analogMeasurements, e
+	}
+	return apiID, sourceAddress, rssi, options, quantity, analogChannels, analogMeasurements, e
 }

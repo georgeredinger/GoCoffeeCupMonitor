@@ -53,7 +53,8 @@ const actualPackets = "7E000C830001240001060001F7000058" +
 	"7E000C830001240001060001F8000057" +
 	"7E000C83000124000106000206000048" +
 	"7E000C830001240001060001E500006A"
-
+const fiveAnalogSamplesTwoChannels =
+      "7E001C83000133000506000201000001F6000001FC0000020100000201000040"
 const helloPacket = "7E000A010150010048656C6C6FB8"
 
 // helloPacket
@@ -93,35 +94,17 @@ var frametests = []struct {
 	frame       string
 	apiPacketID uint
 }{
-	{"7E00028A066F", MdmStatus},             //simplist good packet
-	{"00028A066F7E00028A066F", MdmStatus},   //wait for start (garbage in front)
-	{"7E00028A066F102347921834", MdmStatus}, //simplist good packet with trailing garbage
-	{"7E00028A066F7E00028A066F", MdmStatus}, //2 packets in a row
-	{helloPacket, TXreq16},
-	{escapedPacket, 0x23}, //don't know what type 0x23 is,maybe bogus
-	{xonPacket, 0x23},
-	{xoffPacket, 0x23},
-	{actualPackets, Input16},
-	{"7E000C830001240001060001E9000066", Input16},
-	{"7E000C8300012400010600021000003E", Input16},
-	{"7E000C830001240001060001E000006F", Input16},
-	{"7E000C830001240001060001EB000064", Input16},
-	{"7E000C830001240001060001F400005B", Input16},
-	{"7E000C830001240001060001E9000066", Input16},
-	{"7E000C830001240001060001F9000056", Input16},
-	{"7E000C830001240001060001E500006A", Input16},
-	{"7E000C830001240001060001E500006A", Input16},
-	{"7E000C830001240001060001F9000056", Input16},
-	{"7E000C830001240001060001E500006A", Input16},
-	{"7E000C830001240001060001F6000059", Input16},
-	{"7E000C830001240001060001DD000072", Input16},
-	{"7E000C830001240001060001F500005A", Input16},
-	{"7E000C830001240001060001F6000059", Input16},
-	{"7E000C8300012400010600023A000014", Input16},
-	{"7E000C830001240001060001FF000050", Input16},
-	{"7E000C830001240001060001FC000053", Input16},
-	{"7E000C830001240001060001FA000055", Input16},
-}
+//	{"7E00028A066F", MdmStatus},             //simplist good packet
+//	{"00028A066F7E00028A066F", MdmStatus},   //wait for start (garbage in front)
+//	{"7E00028A066F102347921834", MdmStatus}, //simplist good packet with trailing garbage
+//	{"7E00028A066F7E00028A066F", MdmStatus}, //2 packets in a row
+//	{helloPacket, TXreq16},
+//	{escapedPacket, 0x23}, //don't know what type 0x23 is,maybe bogus
+//	{xonPacket, 0x23},
+//	{xoffPacket, 0x23},
+//	{actualPackets, Input16},
+  {fiveAnalogSamplesTwoChannels,Input16},
+	}
 
 //7E    : API Frame
 //00 02 : Length
@@ -142,16 +125,18 @@ func TestFrames(t *testing.T) {
 		apiframe.reset()
 		for _, b := range []byte(packet) {
 			if apiframe.add_byte(b) {
-				packettype, sourceAddress, rssi, options, quality, analogChannels, measurements, e := apiframe.parse()
+				packettype, sourceAddress, rssi, options, quantity, analogChannels, measurements, e := apiframe.parse()
 
 				apiframe.reset() //discard frame once parsed
 				if e == nil {
 					if packettype == Input16 {
-						fmt.Printf("type: %X sourceAddress %d rssi %d options %b,quality %d,analogChannels %b measurements %d\n",
-							packettype, sourceAddress, rssi, options, quality, analogChannels, measurements)
-						fmt.Printf("measurement %f\n", ((float32(measurements[0])*(1500.0/1023.0)-500)/10.0)*1.8+32.0)
-
+						fmt.Printf("type: %X sourceAddress %d rssi %d options %b,quantity %d,analogChannels %b measurements %d\n",
+							packettype, sourceAddress, rssi, options, quantity, analogChannels, measurements)
+							for i := uint(0);i<quantity;i++ {
+						fmt.Printf("measurement[%d] %f\n",i, ((float32(measurements[i])*(1500.0/1023.0)-500)/10.0)*1.8+32.0)
 					}
+
+				}
 				} else {
 					fmt.Printf("packet parse failed %v\n", e)
 				}
