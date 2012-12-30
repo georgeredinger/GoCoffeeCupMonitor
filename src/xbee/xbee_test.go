@@ -94,15 +94,15 @@ var frametests = []struct {
 	frame       string
 	apiPacketID uint
 }{
-//	{"7E00028A066F", MdmStatus},             //simplist good packet
-//	{"00028A066F7E00028A066F", MdmStatus},   //wait for start (garbage in front)
-//	{"7E00028A066F102347921834", MdmStatus}, //simplist good packet with trailing garbage
-//	{"7E00028A066F7E00028A066F", MdmStatus}, //2 packets in a row
-//	{helloPacket, TXreq16},
-//	{escapedPacket, 0x23}, //don't know what type 0x23 is,maybe bogus
-//	{xonPacket, 0x23},
-//	{xoffPacket, 0x23},
-//	{actualPackets, Input16},
+	{"7E00028A066F", MdmStatus},             //simplist good packet
+	{"00028A066F7E00028A066F", MdmStatus},   //wait for start (garbage in front)
+	{"7E00028A066F102347921834", MdmStatus}, //simplist good packet with trailing garbage
+	{"7E00028A066F7E00028A066F", MdmStatus}, //2 packets in a row
+	{helloPacket, TXreq16},
+	{escapedPacket, 0x23}, //don't know what type 0x23 is,maybe bogus
+	{xonPacket, 0x23},
+	{xoffPacket, 0x23},
+	{actualPackets, Input16},
   {fiveAnalogSamplesTwoChannels,Input16},
 	}
 
