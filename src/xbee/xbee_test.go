@@ -56,7 +56,7 @@ const actualPackets = "7E000C830001240001060001F7000058" +
 const fiveAnalogSamplesTwoChannels =
       "7E001C83000133000506000201000001F6000001FC0000020100000201000040"
 const helloPacket = "7E000A010150010048656C6C6FB8"
-
+const seventeenSamplesTwoChannels = "7E004C8300012800110600021A000001FF0000021C000002200000021A0000021B0000022C00000236000002140000021D00000232000002250000020B0000021F0000022A000002010000022800002A"
 // helloPacket
 // 7E // Start delimiter
 // 00 0A // Length bytes
@@ -94,16 +94,17 @@ var frametests = []struct {
 	frame       string
 	apiPacketID uint
 }{
-	{"7E00028A066F", MdmStatus},             //simplist good packet
-	{"00028A066F7E00028A066F", MdmStatus},   //wait for start (garbage in front)
-	{"7E00028A066F102347921834", MdmStatus}, //simplist good packet with trailing garbage
-	{"7E00028A066F7E00028A066F", MdmStatus}, //2 packets in a row
-	{helloPacket, TXreq16},
-	{escapedPacket, 0x23}, //don't know what type 0x23 is,maybe bogus
-	{xonPacket, 0x23},
-	{xoffPacket, 0x23},
-	{actualPackets, Input16},
-  {fiveAnalogSamplesTwoChannels,Input16},
+	//{"7E00028A066F", MdmStatus},             //simplist good packet
+	//{"00028A066F7E00028A066F", MdmStatus},   //wait for start (garbage in front)
+	//{"7E00028A066F102347921834", MdmStatus}, //simplist good packet with trailing garbage
+	//{"7E00028A066F7E00028A066F", MdmStatus}, //2 packets in a row
+	//{helloPacket, TXreq16},
+	//{escapedPacket, 0x23}, //don't know what type 0x23 is,maybe bogus
+	//{xonPacket, 0x23},
+	//{xoffPacket, 0x23},
+	//{actualPackets, Input16},
+  //{fiveAnalogSamplesTwoChannels,Input16},
+  {seventeenSamplesTwoChannels,Input16},
 	}
 
 //7E    : API Frame
@@ -122,12 +123,13 @@ func TestFrames(t *testing.T) {
 			panic("bad test data\n")
 		}
 		var apiframe APIframe
-		apiframe.reset()
+		apiframe.Reset()
+		found := false
 		for _, b := range []byte(packet) {
-			if apiframe.add_byte(b) {
-				packettype, sourceAddress, rssi, options, quantity, analogChannels, measurements, e := apiframe.parse()
-
-				apiframe.reset() //discard frame once parsed
+			if apiframe.Add_byte(b) {
+				packettype, sourceAddress, rssi, options, quantity, analogChannels, measurements, e := apiframe.Parse()
+				found = true
+				apiframe.Reset() //discard frame once parsed
 				if e == nil {
 					if packettype == Input16 {
 						fmt.Printf("type: %X sourceAddress %d rssi %d options %b,quantity %d,analogChannels %b measurements %d\n",
@@ -140,8 +142,10 @@ func TestFrames(t *testing.T) {
 				} else {
 					fmt.Printf("packet parse failed %v\n", e)
 				}
-
 			}
+		}
+    if !found {
+			t.Error("no packet found")
 		}
 	}
 }

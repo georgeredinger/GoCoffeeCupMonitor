@@ -117,7 +117,7 @@ func init() {
 	fmt.Print("Begin\n")
 }
 
-func (f *APIframe) reset() {
+func (f *APIframe) Reset() {
 	f.frame = f.frame[:0]
 	f.lengthHi = 0
 	f.lengthLo = 0
@@ -139,19 +139,21 @@ func bitCount(x uint) (n uint) {
 
 func (f *APIframe) checksum() bool { return false }
 
-func (f *APIframe) add_byte(b uint8) bool {
+func (f *APIframe) Add_byte(b uint8) bool {
 
 	switch b {
-	case XON_BYTE, XOFF_BYTE:
-		if f.state == waitingForEscape {
-			break
-		} else {
-			return false //ignore xon xoff
-		}
+		// maybe xon/xoff are used but escaped
+//	case XON_BYTE, XOFF_BYTE:
+//		if f.state == waitingForEscape {
+//			break
+//		} else {
+//			return false //ignore xon xoff
+//		}
 	case ESCAPE_BYTE:
 		if f.state == waitingForEscape {
 			break
 		} else {
+			fmt.Printf("escape\n")
 			f.state = waitingForEscape
 			return false
 		}
@@ -203,7 +205,7 @@ func (f *APIframe) add_byte(b uint8) bool {
 			f.state = waitingForStart
 			fmt.Printf("Checksum %X != %X\n", f.checkSum, b)
 			fmt.Printf("packet: %X,%X\n", f.frame, b)
-			f.reset()
+			f.Reset()
 			return false // 
 		}
 	case done:
@@ -217,7 +219,7 @@ func (f *APIframe) add_byte(b uint8) bool {
 
 func (f APIframe) remaining_bytes() uint { return f.bytesLeft }
 
-func (f APIframe) parse() (apiID uint, sourceAddress uint, rssi uint,
+func (f APIframe) Parse() (apiID uint, sourceAddress uint, rssi uint,
 	options uint, quantity uint, analogChannels uint, analogMeasurements []uint, e error) {
 	apiID = uint(f.frame[0])
 	if apiID != Input16 {
