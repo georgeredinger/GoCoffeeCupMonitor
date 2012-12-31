@@ -11,8 +11,9 @@ import (
 var offset int = 0
 
 func init() {
-	fmt.Printf("begin\n")
+
 }
+
 
 func main() {
 	var n int
@@ -44,7 +45,8 @@ func main() {
 						}
             mean := sum / quantity
 						t:=time.Now()
-						fmt.Printf("%v %f\n",t.UnixNano()/1e9 , ((float32(mean)*(1500.0/1023.0)-500)/10.0)*1.8+32.0)
+						temp := ((float32(mean)*(1500.0/1023.0)-500)/10.0)*1.8+32.0
+						fmt.Printf("%d %3.1f\n",t.UnixNano()/1e9 ,temp)
 					}
 				} else {
 					fmt.Printf("packet parse failed %v\n", e)

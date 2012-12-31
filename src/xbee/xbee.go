@@ -114,7 +114,7 @@ type APIframe struct {
 }
 
 func init() {
-	fmt.Print("Begin\n")
+
 }
 
 func (f *APIframe) Reset() {
