@@ -39,13 +39,14 @@ func main() {
 				// buf = buf[:0]
 				if e == nil {
 					if packettype == xbee.Input16 {
-            sum := uint(0)
-						for i := uint(0); i < quantity; i++ {
-							sum += measurements[i]
-						}
-            mean := sum / quantity
+          //  sum := uint(0)
+					//	for i := uint(0); i < quantity; i++ {
+					//		sum += measurements[i]
+					//	}
+          //  mean := sum / quantity
+					median := xbee.MedianInt(measurements[0:quantity])
 						t:=time.Now()
-						temp := ((float32(mean)*(1500.0/1023.0)-500)/10.0)*1.8+32.0
+						temp := ((float32(median)*(1500.0/1023.0)-500)/10.0)*1.8+32.0
 						fmt.Printf("%d %3.1f\n",t.UnixNano()/1e9 ,temp)
 					}
 				} else {

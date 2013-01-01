@@ -62,6 +62,7 @@ package xbee
 import (
 	"errors"
 	"fmt"
+	"sort"
 )
 
 const (
@@ -113,8 +114,17 @@ type APIframe struct {
 	state     uint8
 }
 
-func init() {
+func MedianInt(a [] int) int {
+	var median int
 
+  sort.Ints(a)	
+
+	if i:=len(a); i % 2 == 0 {
+      median = (a[i/2-1] + a[i/2])/2 
+		} else {
+      median = a[i/2] 
+		}
+		return median
 }
 
 func (f *APIframe) Reset() {
@@ -142,7 +152,7 @@ func (f *APIframe) checksum() bool { return false }
 func (f *APIframe) Add_byte(b uint8) bool {
 
 	switch b {
-		// maybe xon/xoff are used but escaped
+		// maybe xon/xoff are used but scaped
 //	case XON_BYTE, XOFF_BYTE:
 //		if f.state == waitingForEscape {
 //			break
@@ -154,6 +164,7 @@ func (f *APIframe) Add_byte(b uint8) bool {
 			break
 		} else {
 			fmt.Printf("escape\n")
+			//Todo: check sum fails on these packets
 			f.state = waitingForEscape
 			return false
 		}
@@ -203,8 +214,8 @@ func (f *APIframe) Add_byte(b uint8) bool {
 			return true
 		} else {
 			f.state = waitingForStart
-			fmt.Printf("Checksum %X != %X\n", f.checkSum, b)
-			fmt.Printf("packet: %X,%X\n", f.frame, b)
+//			fmt.Printf("Checksum %X != %X\n", f.checkSum, b)
+//			fmt.Printf("packet: %X,%X\n", f.frame, b)
 			f.Reset()
 			return false // 
 		}
@@ -220,7 +231,7 @@ func (f *APIframe) Add_byte(b uint8) bool {
 func (f APIframe) remaining_bytes() uint { return f.bytesLeft }
 
 func (f APIframe) Parse() (apiID uint, sourceAddress uint, rssi uint,
-	options uint, quantity uint, analogChannels uint, analogMeasurements []uint, e error) {
+	options uint, quantity uint, analogChannels uint, analogMeasurements []int, e error) {
 	apiID = uint(f.frame[0])
 	if apiID != Input16 {
 		return apiID, sourceAddress, rssi, options, quantity, analogChannels, analogMeasurements, e
@@ -257,12 +268,12 @@ func (f APIframe) Parse() (apiID uint, sourceAddress uint, rssi uint,
 	}
 
 	channelCount := bitCount(analogChannels)
-	analogMeasurements = make([]uint, channelCount*quantity)
+	analogMeasurements = make([]int, channelCount*quantity)
 
 	if len(f.frame) > 9 {
 		for q := uint(0); q < quantity;q++ {
 			for i := uint(0); i < channelCount; i++ {
-				measurement := uint(uint(f.frame[(8+i*2)+q*channelCount*2])<<8 + uint(f.frame[(9+i*2)+q*channelCount*2]))
+				measurement := int(int(f.frame[(8+i*2)+q*channelCount*2])<<8 + int(f.frame[(9+i*2)+q*channelCount*2]))
 				analogMeasurements[i+q] = measurement
 	  	}
 	}

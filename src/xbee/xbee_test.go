@@ -94,16 +94,16 @@ var frametests = []struct {
 	frame       string
 	apiPacketID uint
 }{
-	//{"7E00028A066F", MdmStatus},             //simplist good packet
-	//{"00028A066F7E00028A066F", MdmStatus},   //wait for start (garbage in front)
-	//{"7E00028A066F102347921834", MdmStatus}, //simplist good packet with trailing garbage
-	//{"7E00028A066F7E00028A066F", MdmStatus}, //2 packets in a row
-	//{helloPacket, TXreq16},
-	//{escapedPacket, 0x23}, //don't know what type 0x23 is,maybe bogus
-	//{xonPacket, 0x23},
-	//{xoffPacket, 0x23},
-	//{actualPackets, Input16},
-  //{fiveAnalogSamplesTwoChannels,Input16},
+	{"7E00028A066F", MdmStatus},             //simplist good packet
+	{"00028A066F7E00028A066F", MdmStatus},   //wait for start (garbage in front)
+	{"7E00028A066F102347921834", MdmStatus}, //simplist good packet with trailing garbage
+	{"7E00028A066F7E00028A066F", MdmStatus}, //2 packets in a row
+	{helloPacket, TXreq16},
+	{escapedPacket, 0x23}, //don't know what type 0x23 is,maybe bogus
+	{xonPacket, 0x23},
+	{xoffPacket, 0x23},
+	{actualPackets, Input16},
+  {fiveAnalogSamplesTwoChannels,Input16},
   {seventeenSamplesTwoChannels,Input16},
 	}
 
@@ -113,10 +113,27 @@ var frametests = []struct {
 //06    : Coordinator started
 //6F    : checksum FF – ((8A +06) & FF) = 6F
 //
+func TestMedianInt(t *testing.T){
+	var onlyOne = []int {1}
+	if MedianInt(onlyOne) != 1 { t.Error("array length of one fails")}
+	var onlyTwo = []int{2,1}
+	if MedianInt(onlyTwo) != 1 { t.Error("array length of two fails")}
+  var threeOdd = []int{1,3,2}
+	if MedianInt(threeOdd) != 2 { t.Error("array length of three fails")}
+  var four = []int{1,2,3,4}
+	if MedianInt(four) != 2 { t.Error("array length of four fails")}
+	var sortaLikeRealDataOdd = []int{503,501,600,503,400,250,400,250,250,251,600,503,400,250,400,250,250}
+	if i:=MedianInt(sortaLikeRealDataOdd);i != 400 { t.Errorf("sortaLikeRealDataOdd fails %d",i)}
+	var sortaLikeRealDataEven = []int{503,503,501,600,503,400,250,400,250,250,251,600,503,400,250,400,250,250}
+	if i:=MedianInt(sortaLikeRealDataEven);i != 400 { t.Errorf("sortaLikeRealDataOdd fails %d",i)}
 
+
+
+}
 var packet []byte
 
 func TestFrames(t *testing.T) {
+	return
 	for _, f := range frametests {
 		packet, err := hex.DecodeString(f.frame) // convert test data hex string to byte sequence
 		if err != nil {
