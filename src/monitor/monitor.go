@@ -5,11 +5,12 @@ import (
  "xbee"
  "fmt"
  "log"
+ "os"
  "time"
  "math"
 )
 const (
-	A = 8.271111E-4 // 108 probe
+	A = 8.271111E-4 // 108 probe betatherm 100K6A1B
 	B = 2.088020E-4
 	C = 8.059200E-8
 //	A = 1.129241e-3 // 109 probe
@@ -19,6 +20,12 @@ const (
 var offset int = 0
 
 func init() {
+	f, e := os.OpenFile("monitor.log", os.O_WRONLY|os.O_CREATE| os.O_APPEND, 0640)
+  if e != nil {
+		log.Fatalln(e)
+	}
+	log.SetOutput(f)
+	log.Printf("monitor start %v",time.Now())
 
 }
 
@@ -42,7 +49,7 @@ func main() {
 		}
 		for i := 0; i < n; i++ {
 			if apiframe.Add_byte(buf[i]) {
-				packettype, _, _, _, quantity, _, measurements, e := apiframe.Parse()
+				packettype, _, _, _, quantity, _, measurements, e := apiframe.Parse() // one index out of range thrown to here
 				apiframe.Reset() //discard frame once parsed
 				// buf = buf[:0]
 				if e == nil {

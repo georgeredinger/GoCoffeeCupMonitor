@@ -64,6 +64,7 @@ import (
 	"sort"
 	"os"
 	"log"
+	"time"
 )
 
 const (
@@ -115,8 +116,12 @@ type APIframe struct {
 	state     uint8
 }
 func init() {
-	f, _ := os.Open("logfile.log")
+	f, e := os.OpenFile("xbee.log",os.O_WRONLY | os.O_CREATE | os.O_APPEND,0640)
+	if e != nil {
+		 log.Fatalln(e)
+	 }
 	log.SetOutput(f)
+	log.Printf("Xbee start %v",time.Now())
 }
 
 func MedianInt(a [] int) int {
@@ -166,11 +171,13 @@ func (f *APIframe) Add_byte(b uint8) bool {
 //		}
 	case ESCAPE_BYTE:
 		if f.state == waitingForEscape {
+			log.Printf("escaped %X\n",b)
 			break
 		} else {
 			log.Printf("escape\n")
 			//Todo: check sum fails on these packets
 			f.state = waitingForEscape
+			f.bytesLeft--
 			return false
 		}
 	}
@@ -183,6 +190,7 @@ func (f *APIframe) Add_byte(b uint8) bool {
 			if f.bytesLeft != 0 {
 				panic("new packet inside packet length must have been wrong")
 			}
+			log.Printf("Start of Packet\n")
 			return false
 		}
 		return false
@@ -195,6 +203,7 @@ func (f *APIframe) Add_byte(b uint8) bool {
 		f.lengthLo = uint(b)
 		f.length = f.lengthHi*255 + f.lengthLo
 		f.bytesLeft = f.length
+		log.Printf("length: %04X\n",f.length)
 		return false
 	case waitingForEscape:
 		b ^= byte(0x20)
@@ -204,7 +213,8 @@ func (f *APIframe) Add_byte(b uint8) bool {
 			f.frame = append(f.frame, b)
 			f.bytesLeft--
 		}
-		if f.bytesLeft == 0 {
+		if f.bytesLeft == 1 {
+			log.Printf("bytes left == 1,b=%X\n",b)
 			f.state = waitingForCheckSum
 		}
 		return false
@@ -218,7 +228,7 @@ func (f *APIframe) Add_byte(b uint8) bool {
 			f.state = done
 			return true
 		} else {
-			f.state = waitingForStart
+				f.state = waitingForStart
 			log.Printf("Checksum %X != %X\n", f.checkSum, b)
 			log.Printf("packet: %X,%X\n", f.frame, b)
 			f.Reset()
@@ -237,7 +247,7 @@ func (f APIframe) remaining_bytes() uint { return f.bytesLeft }
 
 func (f APIframe) Parse() (apiID uint, sourceAddress uint, rssi uint,
 	options uint, quantity uint, analogChannels uint, analogMeasurements []int, e error) {
-	apiID = uint(f.frame[0])
+	apiID = uint(f.frame[0]) //index out of range thrown from here
 	if apiID != Input16 {
 		return apiID, sourceAddress, rssi, options, quantity, analogChannels, analogMeasurements, e
 	}
