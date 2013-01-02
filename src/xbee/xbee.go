@@ -61,8 +61,9 @@ package xbee
 
 import (
 	"errors"
-	"fmt"
 	"sort"
+	"os"
+	"log"
 )
 
 const (
@@ -112,6 +113,10 @@ type APIframe struct {
 	bytesLeft uint
 	checkSum  uint8
 	state     uint8
+}
+func init() {
+	f, _ := os.Open("logfile.log")
+	log.SetOutput(f)
 }
 
 func MedianInt(a [] int) int {
@@ -163,7 +168,7 @@ func (f *APIframe) Add_byte(b uint8) bool {
 		if f.state == waitingForEscape {
 			break
 		} else {
-			fmt.Printf("escape\n")
+			log.Printf("escape\n")
 			//Todo: check sum fails on these packets
 			f.state = waitingForEscape
 			return false
@@ -214,8 +219,8 @@ func (f *APIframe) Add_byte(b uint8) bool {
 			return true
 		} else {
 			f.state = waitingForStart
-//			fmt.Printf("Checksum %X != %X\n", f.checkSum, b)
-//			fmt.Printf("packet: %X,%X\n", f.frame, b)
+			log.Printf("Checksum %X != %X\n", f.checkSum, b)
+			log.Printf("packet: %X,%X\n", f.frame, b)
 			f.Reset()
 			return false // 
 		}

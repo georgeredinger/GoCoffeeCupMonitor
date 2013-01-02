@@ -6,8 +6,16 @@ import (
  "fmt"
  "log"
  "time"
+ "math"
 )
-
+const (
+	A = 8.271111E-4 // 108 probe
+	B = 2.088020E-4
+	C = 8.059200E-8
+//	A = 1.129241e-3 // 109 probe
+//	B = 2.341077e-4
+//	C = 8.775468e-8
+)
 var offset int = 0
 
 func init() {
@@ -39,15 +47,14 @@ func main() {
 				// buf = buf[:0]
 				if e == nil {
 					if packettype == xbee.Input16 {
-          //  sum := uint(0)
-					//	for i := uint(0); i < quantity; i++ {
-					//		sum += measurements[i]
-					//	}
-          //  mean := sum / quantity
-					median := xbee.MedianInt(measurements[0:quantity])
+						//fmt.Printf("raw: %d\n",measurements[0:quantity])
+					  median := xbee.MedianInt(measurements[0:quantity])
 						t:=time.Now()
-						temp := ((float32(median)*(1500.0/1023.0)-500)/10.0)*1.8+32.0
-						fmt.Printf("%d %3.1f\n",t.UnixNano()/1e9 ,temp)
+						mv := ((float64(median)*(2500.0/1023.0))) //~100k ohm thermistor
+						r	 := 98000.0*(2500.0/mv -1)
+						tk := 1/(A+B*math.Log(r) + C*(math.Pow(math.Log(r),3)))
+						f :=(tk-273.15)*1.8+32
+						fmt.Printf("%d %3.1f\n",t.UnixNano()/1e9 ,f)
 					}
 				} else {
 					fmt.Printf("packet parse failed %v\n", e)
