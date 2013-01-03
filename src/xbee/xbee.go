@@ -44,7 +44,7 @@ one byte at a time as they come in
 //
 //                  options
 //                   ^
-//                   | qual
+//                   | quant
 //                   |  |        A0   A1
 //7E 000C 83 0001 24 00 01 0601 01E9 0000 66
 //   |     |   |  |         |             sum
@@ -163,6 +163,8 @@ func (f *APIframe) Add_byte(b uint8) bool {
 
 	switch b {
 		// maybe xon/xoff are used but scaped
+	case XON_BYTE:
+		log.Printf("saw XON_BYTE:%X\n",b)
 //	case XON_BYTE, XOFF_BYTE:
 //		if f.state == waitingForEscape {
 //			break
@@ -174,10 +176,9 @@ func (f *APIframe) Add_byte(b uint8) bool {
 			log.Printf("escaped %X\n",b)
 			break
 		} else {
-			log.Printf("escape\n")
+			log.Printf("escape %X\n",b)
 			//Todo: check sum fails on these packets
 			f.state = waitingForEscape
-			f.bytesLeft--
 			return false
 		}
 	}
@@ -201,20 +202,21 @@ func (f *APIframe) Add_byte(b uint8) bool {
 	case waitingForLengthLo:
 		f.state = waitingForData
 		f.lengthLo = uint(b)
-		f.length = f.lengthHi*255 + f.lengthLo
+		f.length = f.lengthHi*255 + f.lengthLo 
 		f.bytesLeft = f.length
 		log.Printf("length: %04X\n",f.length)
 		return false
 	case waitingForEscape:
 		b ^= byte(0x20)
+    f.state = waitingForData
 		fallthrough
 	case waitingForData:
 		if f.length > uint(len(f.frame)) {
 			f.frame = append(f.frame, b)
 			f.bytesLeft--
 		}
-		if f.bytesLeft == 1 {
-			log.Printf("bytes left == 1,b=%X\n",b)
+		if f.bytesLeft == 0 {
+			log.Printf("bytes left == 0,b=%X\n",b)
 			f.state = waitingForCheckSum
 		}
 		return false
@@ -225,6 +227,7 @@ func (f *APIframe) Add_byte(b uint8) bool {
 		}
 		f.checkSum = 0XFF - sum
 		if b == f.checkSum {
+			log.Printf("Checksum good %X\n", f.checkSum)
 			f.state = done
 			return true
 		} else {
