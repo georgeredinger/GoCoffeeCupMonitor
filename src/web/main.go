@@ -18,6 +18,7 @@ func homeHandler(c http.ResponseWriter, req *http.Request) {
 func main() {
 	flag.Parse()
 	go h.run()
+	go getdata()
 	http.HandleFunc("/", homeHandler)
 	http.Handle("/ws", websocket.Handler(wsHandler))
 	if err := http.ListenAndServe(*addr, nil); err != nil {

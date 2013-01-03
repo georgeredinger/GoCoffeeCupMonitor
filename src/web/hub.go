@@ -12,6 +12,8 @@ type hub struct {
 
 	// Unregister requests from connections.
 	unregister chan *connection
+
+
 }
 
 var h = hub{
@@ -26,6 +28,7 @@ func (h *hub) run() {
 		select {
 		case c := <-h.register:
 			h.connections[c] = true
+			c.send <- "Welcome to The Coffee Cup Monitoring System"
 		case c := <-h.unregister:
 			delete(h.connections, c)
 			close(c.send)
