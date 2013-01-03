@@ -1,0 +1,6 @@
+*.log
+*.hex
+*.doc
+*.dat
+doc/
+
