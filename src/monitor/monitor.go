@@ -50,6 +50,7 @@ func main() {
 		for i := 0; i < n; i++ {
 			if apiframe.Add_byte(buf[i]) {
 				packettype, _, _, _, quantity, _, measurements, e := apiframe.Parse() // one index out of range thrown to here
+
 				apiframe.Reset() //discard frame once parsed
 				// buf = buf[:0]
 				if e == nil {

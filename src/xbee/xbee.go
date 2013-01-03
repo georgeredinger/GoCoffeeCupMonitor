@@ -65,6 +65,7 @@ import (
 	"os"
 	"log"
 	"time"
+	"fmt"
 )
 
 const (
@@ -250,6 +251,11 @@ func (f APIframe) remaining_bytes() uint { return f.bytesLeft }
 
 func (f APIframe) Parse() (apiID uint, sourceAddress uint, rssi uint,
 	options uint, quantity uint, analogChannels uint, analogMeasurements []int, e error) {
+		defer func() {
+			if r := recover(); r != nil {
+				fmt.Println("Recovered Parse %v", r)
+			}
+		}()
 	apiID = uint(f.frame[0]) //index out of range thrown from here
 	if apiID != Input16 {
 		return apiID, sourceAddress, rssi, options, quantity, analogChannels, analogMeasurements, e

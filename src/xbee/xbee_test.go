@@ -57,8 +57,8 @@ const fiveAnalogSamplesTwoChannels =
       "7E001C83000133000506000201000001F6000001FC0000020100000201000040"
 const helloPacket = "7E000A010150010048656C6C6FB8"
 const seventeenSamplesTwoChannels = "7E004C8300012800110600021A000001FF0000021C000002200000021A0000021B0000022C00000236000002140000021D00000232000002250000020B0000021F0000022A000002010000022800002A"
-//caseJ2a with quantity field missing
-const caseJ2a = "7E004C83000133000600024F018D024F01DA024F01F4025001FE024F0201024F0202024F0201024F0202024F0202024F0202024F0202024F0203024F0203024F0202024F0203024F0203024F02033B"
+//caseJ2a with quantity field missing resetting xbee xmitter this packet not sent again
+//const caseJ2a = "7E004C83000133000600024F018D024F01DA024F01F4025001FE024F0201024F0202024F0201024F0202024F0202024F0202024F0202024F0203024F0203024F0202024F0203024F0203024F02033B"
 //caseJ2b with quantity field present 0x11
 const caseJ2b = "7E004C8300013300110600024F018D024F01DA024F01F4025001FE024F0201024F0202024F0201024F0202024F0202024F0202024F0202024F0203024F0203024F0202024F0203024F0203024F02033B"
 // 7E 004C 83 0001 33 00 0600 024F018D024F01DA024F01F4025001FE024F0201024F0202024F0201024F0202024F0202024F0202024F0202024F0203024F0203024F0202024F0203024F0203024F02033B"
@@ -108,19 +108,19 @@ var frametests = []struct {
 	apiPacketID uint
 	name string
 }{
-//	{"7E00028A066F", MdmStatus,"bob"},             //simplist good packet
-//	{"00028A066F7E00028A066F", MdmStatus,"joe"},   //wait for start (garbage in front)
-//	{"7E00028A066F102347921834", MdmStatus,"larry"}, //simplist good packet with trailing garbage
-//	{"7E00028A066F7E00028A066F", MdmStatus,"jill"}, //2 packets in a row
-//	{helloPacket, TXreq16,"susan"},
-//	{escapedPacket, 0x23,"frank"}, //don't know what type 0x23 is,maybe bogus
-//	{xonPacket, 0x23,"barrack"}, // are xon and xoff sent by xbee  for rx only?
-//	{xoffPacket, 0x23,"francine"},
-//  	{actualPackets, Input16,"nilla"},
-//  {fiveAnalogSamplesTwoChannels,Input16,"oreo"},
-//  {seventeenSamplesTwoChannels,Input16,"olando"},
-  {caseJ2a,Input16,"caseJ3"},
-  {caseJ2b,Input16,"caseJ3"},
+	{"7E00028A066F", MdmStatus,"bob"},             //simplist good packet
+	{"00028A066F7E00028A066F", MdmStatus,"joe"},   //wait for start (garbage in front)
+	{"7E00028A066F102347921834", MdmStatus,"larry"}, //simplist good packet with trailing garbage
+	{"7E00028A066F7E00028A066F", MdmStatus,"jill"}, //2 packets in a row
+	{helloPacket, TXreq16,"susan"},
+	{escapedPacket, 0x23,"frank"}, //don't know what type 0x23 is,maybe bogus
+	//{xonPacket, 0x23,"barrack"}, // are xon and xoff sent by xbee  for rx only?
+	//{xoffPacket, 0x23,"francine"},
+ 	{actualPackets, Input16,"nilla"},
+  {fiveAnalogSamplesTwoChannels,Input16,"oreo"},
+  {seventeenSamplesTwoChannels,Input16,"olando"},
+ // {caseJ2a,Input16,"caseJ2a"},
+  {caseJ2b,Input16,"caseJ2b"},
 	}
 
 //7E    : API Frame
