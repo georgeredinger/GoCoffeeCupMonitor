@@ -7,7 +7,9 @@ import (
 
 func getdata() {
 	for {
-   h.broadcast <- fmt.Sprintf("%v",time.Now())
+	 s := fmt.Sprintf("%v",time.Now())
+   addstring(s) 
+   h.broadcast <- s
 	 time.Sleep(10e9)
   }
 

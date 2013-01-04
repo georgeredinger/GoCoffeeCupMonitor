@@ -29,6 +29,7 @@ func (h *hub) run() {
 		case c := <-h.register:
 			h.connections[c] = true
 			c.send <- "Welcome to The Coffee Cup Monitoring System"
+		  dumpdatabase(c.send)
 		case c := <-h.unregister:
 			delete(h.connections, c)
 			close(c.send)
