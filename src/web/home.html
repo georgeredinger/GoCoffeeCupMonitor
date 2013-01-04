@@ -2,6 +2,8 @@
 <head>
 <title>Coffee Cup Monitor</title>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://localhost:1234/rickshaw.js"></script>
+<link rel="stylesheet" href="http://localhost:1234/rickshaw.css">
 <script type="text/javascript">
     $(function() {
 
@@ -37,7 +39,6 @@ html {
 }
 
 body {
-    overflow: hidden;
     padding: 0;
     margin: 0;
     width: 100%;
@@ -56,18 +57,46 @@ div { color:white;}
     background: black;
     margin: 40px 0;
     padding: 0.5em 0.5em 0.5em 0.5em;
-    position: absolute;
     top: 0.5em;
     left: 0.5em;
     right: 0.5em;
     bottom: .5em;
     overflow: auto;
 }
-
+#chart {
+    margin: 40px 0 20px,30px;
+    width: 800px;
+    height: 100px;
+    background: white;
+		color: red;
+}
 </style>
 </head>
 <body>
 <h1> Coffee Cup Monitor</h1>
+<div id="chart">
+
+</div>
 <div id="log"></div>
+<script> 
+
+var graph = new Rickshaw.Graph( {
+	element: document.querySelector("#chart"), 
+	width: 300, 
+	height: 200, 
+	series: [{
+		color: 'steelblue',
+		data: [ 
+			{ x: 0, y: 40 }, 
+			{ x: 1, y: 49 }, 
+			{ x: 2, y: 38 }, 
+			{ x: 3, y: 30 }, 
+			{ x: 4, y: 32 } ]
+	}]
+});
+
+graph.render();
+
+</script> 
 </body>
 </html>

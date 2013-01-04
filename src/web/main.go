@@ -6,14 +6,27 @@ import (
 	"log"
 	"net/http"
 	"text/template"
+	"path"
+)
+
+const (
+	staticDir = "./"
 )
 
 var addr = flag.String("addr", ":1234", "http service address")
 var homeTempl = template.Must(template.ParseFiles("home.html"))
 
 func homeHandler(c http.ResponseWriter, req *http.Request) {
-	homeTempl.Execute(c, req.Host)
+	p := req.URL.Path[1:]
+	if p == "" {
+		homeTempl.Execute(c, req.Host)
+		return
+	}
+	p = path.Join(staticDir, p)
+	http.ServeFile(c, req, p)
 }
+
+
 
 func main() {
 	flag.Parse()
@@ -21,7 +34,7 @@ func main() {
 	go getdata()
 	http.HandleFunc("/", homeHandler)
 	http.Handle("/ws", websocket.Handler(wsHandler))
-	if err := http.ListenAndServe(*addr, nil); err != nil {
+  if err := http.ListenAndServe(*addr,nil ); err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
 }

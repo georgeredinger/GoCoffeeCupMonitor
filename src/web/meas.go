@@ -33,7 +33,14 @@ func getdata() {
   c := &serial.Config{Name: "/dev/ttyUSB0", Baud: 9600}
   s, err := serial.OpenPort(c)
   if err != nil {
-    log.Fatal(err)
+		for {
+			h.broadcast <- fmt.Sprintf("%v",time.Now())
+			s := fmt.Sprintf("%v",time.Now())
+			addstring(s) 
+			h.broadcast <- s
+			time.Sleep(10e9)
+		}
+		log.Fatal(err)
   }
 
   buf := make([]byte, 256)
